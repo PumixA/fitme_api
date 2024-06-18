@@ -4,9 +4,9 @@ const userController = require('../controllers/userController');
 const authenticateJWT = require('../middlewares/jwt');
 
 router.post('/register', userController.userRegister);
-router.post('/login', userController.userlogin);
+router.post('/login', userController.userLogin);
 
-// Exemple de route protegée
+// Exemple de route protégée
 router.get('/profile', authenticateJWT, (req, res) => {
     res.json({ message: 'This is a protected route' });
 });

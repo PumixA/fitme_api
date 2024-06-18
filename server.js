@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const mongoConnect = require('./config/mongo');
-const mysqlConnect = require('./config/db');
+const { mysqlConnect } = require('./config/db');
 
 const userRoutes = require('./routes/userRoute');
 
