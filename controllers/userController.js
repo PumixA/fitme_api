@@ -6,9 +6,6 @@ exports.userRegister = async (req, res) => {
         const user = await UserModel.userRegister(req.body);
         res.status(201).json(user);
     } catch (err) {
-        if (err.message === 'Email already exists') {
-            return res.status(400).json({ message: 'Email already exists' });
-        }
         res.status(400).json({ message: err.message });
     }
 };
