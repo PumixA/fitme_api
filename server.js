@@ -8,6 +8,7 @@ const { mysqlConnect } = require('./config/db');
 
 const userRoutes = require('./routes/userRoute');
 const demandesInvitationRoutes = require('./routes/demandesInvitationRoute');
+const dashboardRoutes = require('./routes/dashboardRoute');
 const { APIToolkit } = require('apitoolkit-express');
 
 const app = express();
@@ -25,6 +26,7 @@ mysqlConnect();
 
 app.use('/api/users', userRoutes);
 app.use('/api/invitations', demandesInvitationRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.use(apitoolkitClient.errorHandler);
 
