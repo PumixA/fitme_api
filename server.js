@@ -7,6 +7,7 @@ const mongoConnect = require('./config/mongo');
 const { mysqlConnect } = require('./config/db');
 
 const userRoutes = require('./routes/userRoute');
+const demandesInvitationRoutes = require('./routes/demandesInvitationRoute');
 const { APIToolkit } = require('apitoolkit-express');
 
 const app = express();
@@ -23,6 +24,7 @@ mongoConnect();
 mysqlConnect();
 
 app.use('/api/users', userRoutes);
+app.use('/api/invitations', demandesInvitationRoutes);
 
 app.use(apitoolkitClient.errorHandler);
 

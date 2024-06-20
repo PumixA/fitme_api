@@ -1,5 +1,4 @@
 const UserModel = require('../models/userModel');
-const { sqlConnection } = require('../config/db');
 
 exports.userRegister = async (req, res) => {
     try {
