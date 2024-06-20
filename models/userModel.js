@@ -45,8 +45,13 @@ exports.userLogin = async ({ emailOrPseudo, password }) => {
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) return reject(new Error(`Invalid credentials`));
 
-            const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            resolve({ token });
+            const updateQuery = 'UPDATE utilisateur SET date_modification = NOW() WHERE id = ?';
+            sqlConnection.query(updateQuery, [user.id], (err) => {
+                if (err) return reject(err);
+
+                const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+                resolve({ token });
+            });
         });
     });
 };
