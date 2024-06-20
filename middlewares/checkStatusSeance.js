@@ -1,6 +1,6 @@
 const { sqlConnection } = require('../config/db');
 
-const checkStatus = (req, res, next) => {
+const checkStatusSeance = (req, res, next) => {
     const userId = req.user.id;
 
     const query = 'SELECT id_status_seance FROM utilisateur WHERE id = ?';
@@ -23,4 +23,4 @@ const checkStatus = (req, res, next) => {
     });
 };
 
-module.exports = checkStatus;
+module.exports = checkStatusSeance;

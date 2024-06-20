@@ -51,13 +51,12 @@ exports.userLogin = async ({ emailOrPseudo, password }) => {
     });
 };
 
-exports.getUserById = (id) => {
-    const query = 'SELECT id, pseudo, email, role FROM utilisateur WHERE id = ?';
+exports.getAllUsers = () => {
     return new Promise((resolve, reject) => {
-        sqlConnection.query(query, [id], (err, result) => {
+        const query = 'SELECT id, email, role, date_modification FROM utilisateur';
+        sqlConnection.query(query, (err, results) => {
             if (err) return reject(err);
-            if (result.length === 0) return resolve(null);
-            resolve(result[0]);
+            resolve(results);
         });
     });
 };
