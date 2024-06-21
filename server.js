@@ -11,6 +11,7 @@ const demandesInvitationRoutes = require('./routes/demandesInvitationRoute');
 const dashboardRoutes = require('./routes/dashboardRoute');
 
 const adminUserRoutes = require('./routes/administrateur/userRoute');
+const adminDemandesInvitaionRoutes = require('./routes/administrateur/demandesInvitationRoute');
 
 const { APIToolkit } = require('apitoolkit-express');
 
@@ -35,6 +36,7 @@ app.use('/api/dashboard', dashboardRoutes);
 // Administrateur
 
 app.use('/api/admin/users', adminUserRoutes);
+app.use('/api/admin/demandes_invitation', adminDemandesInvitaionRoutes);
 
 app.use(apitoolkitClient.errorHandler);
 

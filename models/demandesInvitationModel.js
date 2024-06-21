@@ -29,3 +29,24 @@ exports.addInvitation = (email, dateInvitation) => {
         });
     });
 };
+
+exports.getAllDemandes = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT id, email, date_invitation FROM demandes_invitation';
+        sqlConnection.query(query, (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};
+
+exports.deleteDemandeById = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = 'DELETE FROM demandes_invitation WHERE id = ?';
+        sqlConnection.query(query, [id], (err, result) => {
+            if (err) return reject(err);
+            if (result.affectedRows === 0) return reject(new Error('Demande not found'));
+            resolve({ message: 'Demande deleted successfully' });
+        });
+    });
+};
