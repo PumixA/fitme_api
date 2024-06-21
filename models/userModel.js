@@ -56,12 +56,37 @@ exports.userLogin = async ({ emailOrPseudo, password }) => {
     });
 };
 
+exports.getOneById = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT id, email, pseudo, nom, prenom, age, genre, photo_profil, date_inscription, date_modification
+            FROM utilisateur
+            WHERE id = ?`;
+        sqlConnection.query(query, [id], (err, result) => {
+            if (err) return reject(err);
+            if (result.length === 0) return reject(new Error('User not found'));
+            resolve(result[0]);
+        });
+    });
+};
+
 exports.getAllUsersByRole = (role) => {
     return new Promise((resolve, reject) => {
         const query = 'SELECT id, email, role, date_modification FROM utilisateur WHERE role = ?';
         sqlConnection.query(query, [role], (err, results) => {
             if (err) return reject(err);
             resolve(results);
+        });
+    });
+};
+
+exports.updateUserRole = (id, role) => {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE utilisateur SET role = ? WHERE id = ?';
+        sqlConnection.query(query, [role, id], (err, result) => {
+            if (err) return reject(err);
+            if (result.affectedRows === 0) return reject(new Error('User not found'));
+            resolve({ message: `User role updated to ${role}` });
         });
     });
 };

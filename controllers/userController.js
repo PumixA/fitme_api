@@ -35,3 +35,30 @@ exports.getAllBanniProfile = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.getOneById = async (req, res) => {
+    try {
+        const user = await UserModel.getOneById(req.params.id);
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.banOneById = async (req, res) => {
+    try {
+        const result = await UserModel.updateUserRole(req.params.id, 'banni');
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.unbanOneById = async (req, res) => {
+    try {
+        const result = await UserModel.updateUserRole(req.params.id, 'utilisateur');
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
