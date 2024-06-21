@@ -9,6 +9,9 @@ const { mysqlConnect } = require('./config/db');
 const userRoutes = require('./routes/userRoute');
 const demandesInvitationRoutes = require('./routes/demandesInvitationRoute');
 const dashboardRoutes = require('./routes/dashboardRoute');
+
+const adminUserRoutes = require('./routes/administrateur/userRoute');
+
 const { APIToolkit } = require('apitoolkit-express');
 
 const app = express();
@@ -24,9 +27,14 @@ app.use(apitoolkitClient.expressMiddleware);
 mongoConnect();
 mysqlConnect();
 
+// Utilisateur
 app.use('/api/users', userRoutes);
 app.use('/api/invitations', demandesInvitationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+
+// Administrateur
+
+app.use('/api/admin/users', adminUserRoutes);
 
 app.use(apitoolkitClient.errorHandler);
 

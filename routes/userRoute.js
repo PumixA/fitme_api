@@ -9,9 +9,8 @@ const {checkRoleAdmin} = require("../middlewares/checkRole");
 router.post('/register', userController.userRegister);
 router.post('/login', userController.userLogin);
 
-// Utilisateur
 
-// Administrateur
-router.get('/admin/', authenticateJWT, checkRoleAdmin, userController.getAdminProfile);
+
+
 
 module.exports = router;

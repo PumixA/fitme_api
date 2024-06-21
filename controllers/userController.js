@@ -18,9 +18,18 @@ exports.userLogin = async (req, res) => {
     }
 };
 
-exports.getAdminProfile = async (req, res) => {
+exports.getAllUtilisateursProfile = async (req, res) => {
     try {
-        const users = await UserModel.getAllUsers();
+        const users = await UserModel.getAllUsersByRole('utilisateur');
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getAllBanniProfile = async (req, res) => {
+    try {
+        const users = await UserModel.getAllUsersByRole('banni');
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ message: err.message });

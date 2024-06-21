@@ -56,10 +56,10 @@ exports.userLogin = async ({ emailOrPseudo, password }) => {
     });
 };
 
-exports.getAllUsers = () => {
+exports.getAllUsersByRole = (role) => {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT id, email, role, date_modification FROM utilisateur';
-        sqlConnection.query(query, (err, results) => {
+        const query = 'SELECT id, email, role, date_modification FROM utilisateur WHERE role = ?';
+        sqlConnection.query(query, [role], (err, results) => {
             if (err) return reject(err);
             resolve(results);
         });
