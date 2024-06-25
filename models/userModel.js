@@ -90,3 +90,13 @@ exports.updateUserRole = (id, role) => {
         });
     });
 };
+
+exports.countUsers = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT COUNT(*) AS count FROM utilisateur';
+        sqlConnection.query(query, (err, result) => {
+            if (err) return reject(err);
+            resolve(result[0].count);
+        });
+    });
+};

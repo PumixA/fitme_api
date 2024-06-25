@@ -10,7 +10,7 @@ router.get('/actif', authenticateJWT, checkRoleAdmin, userController.getAllUtili
 router.get('/banni', authenticateJWT, checkRoleAdmin, userController.getAllBanniProfile);
 
 // GET ONE BY ID
-router.get('/:id', authenticateJWT, checkRoleAdmin, userController.getOneById);
+router.get('/getone/:id', authenticateJWT, checkRoleAdmin, userController.getOneById);
 
 // BANISSEMENT - DEBANISSEMENT
 router.put('/ban/:id', authenticateJWT, checkRoleAdmin, userController.banOneById);
@@ -18,5 +18,6 @@ router.put('/unban/:id', authenticateJWT, checkRoleAdmin, userController.unbanOn
 
 // INVITER
 router.post('/inviter', authenticateJWT, checkRoleAdmin, invitationsController.inviter);
+router.get('/count', userController.countUsers);
 
 module.exports = router;

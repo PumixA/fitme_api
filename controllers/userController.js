@@ -66,3 +66,12 @@ exports.unbanOneById = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.countUsers = async (req, res) => {
+    try {
+        const userCount = await UserModel.countUsers();
+        res.status(200).json({ count: userCount });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
