@@ -26,7 +26,7 @@ exports.createInvitation = (email, limite_utilisation) => {
     const date_creation = new Date();
 
     return new Promise((resolve, reject) => {
-        const query = 'INSERT INTO invitations (email, token, limite_utilisation, date_creation) VALUES (?, ?, ?, ?)';
+        const query = 'INSERT INTO invitations (email, token, nombre_utilisation, limite_utilisation, date_creation) VALUES (?, ?, 0, ?, ?)';
         sqlConnection.query(query, [email, token, limite_utilisation, date_creation], (err, result) => {
             if (err) return reject(err);
             resolve({ id: result.insertId, email, token, limite_utilisation, date_creation });
