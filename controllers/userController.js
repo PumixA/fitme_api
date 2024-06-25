@@ -1,8 +1,12 @@
 const UserModel = require('../models/userModel');
+const InvitationsModel = require('../models/invitationsModel');
 
 exports.userRegister = async (req, res) => {
     try {
         const user = await UserModel.userRegister(req.body);
+
+        await InvitationsModel.incrementTokenUsage(req.params.token);
+
         res.status(201).json(user);
     } catch (err) {
         res.status(400).json({ message: err.message });

@@ -33,3 +33,24 @@ exports.createInvitation = (email, limite_utilisation) => {
         });
     });
 };
+
+exports.checkTokenValid = (token) => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM invitations WHERE token = ?';
+        sqlConnection.query(query, [token], (err, result) => {
+            if (err) return reject(err);
+            if (result.length === 0) return reject(new Error('Invalid token'));
+            resolve(result[0]);
+        });
+    });
+};
+
+exports.incrementTokenUsage = (token) => {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE invitations SET nombre_utilisation = nombre_utilisation + 1 WHERE token = ?';
+        sqlConnection.query(query, [token], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
