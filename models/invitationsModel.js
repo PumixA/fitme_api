@@ -54,3 +54,13 @@ exports.incrementTokenUsage = (token) => {
         });
     });
 };
+
+exports.getAllInvitations = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT id, email, nombre_utilisation, limite_utilisation, date_utilisation FROM invitations';
+        sqlConnection.query(query, (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};

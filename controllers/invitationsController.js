@@ -77,3 +77,12 @@ const sendInvitationEmail = async (email, tokenUrl, qrCodePath) => {
 
     fs.unlinkSync(qrCodePath);
 };
+
+exports.getAllInvitations = async (req, res) => {
+    try {
+        const invitations = await InvitationsModel.getAllInvitations();
+        res.status(200).json(invitations);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
