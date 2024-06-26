@@ -18,7 +18,9 @@ router.put('/unban/:id', authenticateJWT, checkRoleAdmin, userController.unbanOn
 
 // INVITER
 router.post('/inviter', authenticateJWT, checkRoleAdmin, invitationsController.inviter);
+router.put('/inviter/edit/:id', authenticateJWT, checkRoleAdmin, invitationsController.editInvitation);
 router.get('/inviter/getall', authenticateJWT, checkRoleAdmin, invitationsController.getAllInvitations);
+router.get('/inviter/getone/:id', authenticateJWT, checkRoleAdmin, invitationsController.getOneInvitation);
 router.get('/count', userController.countUsers);
 
 module.exports = router;

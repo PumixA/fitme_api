@@ -6,6 +6,7 @@ exports.userRegister = async (req, res) => {
         const user = await UserModel.userRegister(req.body);
 
         await InvitationsModel.incrementTokenUsage(req.params.token);
+        await InvitationsModel.updateDateUtilisation(req.params.token);  // New line to update date_utilisation
 
         res.status(201).json(user);
     } catch (err) {

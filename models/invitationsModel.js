@@ -64,3 +64,35 @@ exports.getAllInvitations = () => {
         });
     });
 };
+
+exports.getOneInvitation = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT id, email, nombre_utilisation, limite_utilisation, date_utilisation, token FROM invitations WHERE id = ?';
+        sqlConnection.query(query, [id], (err, results) => {
+            if (err) return reject(err);
+            if (results.length === 0) return resolve(null);
+            resolve(results[0]);
+        });
+    });
+};
+
+exports.editInvitation = (id, limite_utilisation) => {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE invitations SET limite_utilisation = ? WHERE id = ?';
+        sqlConnection.query(query, [limite_utilisation, id], (err, result) => {
+            if (err) return reject(err);
+            if (result.affectedRows === 0) return resolve(null);
+            resolve(result);
+        });
+    });
+};
+
+exports.updateDateUtilisation = (token) => {
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE invitations SET date_utilisation = NOW() WHERE token = ?';
+        sqlConnection.query(query, [token], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
