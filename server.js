@@ -13,6 +13,7 @@ const dashboardRoutes = require('./routes/dashboardRoute');
 const adminUserRoutes = require('./routes/administrateur/userRoute');
 const adminDemandesInvitaionRoutes = require('./routes/administrateur/demandesInvitationRoute');
 const adminGroupeMusculaireRoutes = require('./routes/administrateur/groupeMusculaireRoute');
+const adminExerciceRoutes = require('./routes/administrateur/exerciceRoute');
 
 const { APIToolkit } = require('apitoolkit-express');
 
@@ -39,6 +40,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/demandes_invitation', adminDemandesInvitaionRoutes);
 app.use('/api/admin/groupe_musculaire', adminGroupeMusculaireRoutes);
+app.use('/api/admin/exercice', adminExerciceRoutes);
 
 app.use(apitoolkitClient.errorHandler);
 
