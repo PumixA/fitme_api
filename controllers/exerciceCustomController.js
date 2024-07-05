@@ -1,3 +1,4 @@
+const Exercice = require('../models/exerciceModel');
 const ExerciceCustom = require('../models/exerciceCustomModel');
 const path = require('path');
 const fs = require('fs').promises;
@@ -63,6 +64,53 @@ exports.addCustomExercise = async (req, res) => {
             await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
             await fs.unlink(file.path).catch(console.error);  // Ensure the temporary file is deleted in case of an error
         }
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.addCustomExerciseFromExercice = async (req, res) => {
+    try {
+        const exercice = await Exercice.findById(req.params.id).populate('id_groupe_musculaire', 'nom');
+        if (!exercice) {
+            return res.status(404).json({ message: 'Exercice not found' });
+        }
+
+        const newCustomExercise = new ExerciceCustom({
+            id_utilisateur: req.user.id,
+            nom: exercice.nom,
+            description: exercice.description,
+            photo: exercice.photo,
+            id_groupe_musculaire: exercice.id_groupe_musculaire,
+            lien_video: exercice.lien_video,
+            date_creation: Date.now(),
+            date_modification: Date.now(),
+            categorie: 'actif'
+        });
+
+        await newCustomExercise.save();
+
+        if (exercice.photo) {
+            const fileExtension = path.extname(exercice.photo);
+            const newPhotoFileName = `${newCustomExercise._id}${fileExtension}`;
+            const oldPhotoPath = path.join(__dirname, '..', 'uploads', 'exercices', exercice.photo);
+            const newPhotoPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', newPhotoFileName);
+
+            try {
+                await fs.copyFile(oldPhotoPath, newPhotoPath);
+                newCustomExercise.photo = newPhotoFileName;
+                await newCustomExercise.save();
+            } catch (error) {
+                if (error.code === 'ENOENT') {
+                    console.warn('Original photo file not found, skipping photo duplication');
+                } else {
+                    console.error('Failed to copy photo file:', error);
+                    return res.status(500).json({ message: 'Failed to copy photo file' });
+                }
+            }
+        }
+
+        res.status(201).json({ message: 'Custom exercise created successfully from existing exercise', newCustomExercise });
+    } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
