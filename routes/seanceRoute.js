@@ -6,5 +6,6 @@ const { checkRoleUser } = require("../middlewares/checkRole");
 
 router.post('/add', authenticateJWT, checkRoleUser, seanceController.addSeance);
 router.get('/getall', authenticateJWT, checkRoleUser, seanceController.getAllSeances);
+router.put('/edit/:id', authenticateJWT, checkRoleUser, seanceController.editSeance);
 
 module.exports = router;
