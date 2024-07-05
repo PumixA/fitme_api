@@ -100,3 +100,38 @@ exports.countUsers = () => {
         });
     });
 };
+
+exports.getUserProfile = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT id, email, pseudo, nom, prenom, age, genre, photo_profil, date_inscription
+            FROM utilisateur
+            WHERE id = ?`;
+        sqlConnection.query(query, [id], (err, result) => {
+            if (err) return reject(err);
+            if (result.length === 0) return reject(new Error('User not found'));
+            resolve(result[0]);
+        });
+    });
+};
+
+exports.updateUserProfile = (userId, userData, photoFile) => {
+    const { nom, prenom, age, genre, taille, poids } = userData;
+    let imc = null;
+
+    if (taille && poids) {
+        imc = (poids / ((taille / 100) ** 2)).toFixed(2);
+    }
+
+    const query = `
+        UPDATE utilisateur
+        SET nom = ?, prenom = ?, age = ?, genre = ?, photo_profil = ?, date_modification = NOW()
+        WHERE id = ?`;
+
+    return new Promise((resolve, reject) => {
+        sqlConnection.query(query, [nom, prenom, age, genre, photoFile, userId], (err, result) => {
+            if (err) return reject(err);
+            resolve({ message: 'Profile updated successfully', imc });
+        });
+    });
+};
