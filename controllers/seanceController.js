@@ -24,3 +24,25 @@ exports.addSeance = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.getAllSeances = async (req, res) => {
+    const { nom, jour_seance } = req.query;
+    const userId = req.user.id;
+
+    let filter = { status: 'actif', id_utilisateur: userId };
+
+    if (nom) {
+        filter.nom = { $regex: nom, $options: 'i' }; // Case-insensitive search
+    }
+
+    if (jour_seance) {
+        filter.jour_seance = { $in: jour_seance.split(',').map(Number) }; // Convert to array of numbers
+    }
+
+    try {
+        const seances = await Seance.find(filter).sort({ date_creation: -1 });
+        res.status(200).json(seances);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
