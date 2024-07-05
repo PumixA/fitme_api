@@ -16,4 +16,7 @@ router.get('/getone/:id', authenticateJWT, checkRoleAdmin, exerciceController.ge
 // Add a new exercise
 router.post('/add', authenticateJWT, checkRoleAdmin, upload.single('photo'), exerciceController.addExercise);
 
+// Edit an exercice
+router.put('/edit/:id', authenticateJWT, checkRoleAdmin, upload.single('photo'), exerciceController.editExercise);
+
 module.exports = router;
