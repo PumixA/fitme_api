@@ -183,3 +183,40 @@ exports.editCustomExercise = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.getAllCustomExercises = async (req, res) => {
+    try {
+        const exercises = await ExerciceCustom.find({ categorie: 'actif' }).populate('id_groupe_musculaire', 'nom');
+        res.status(200).json(exercises);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getOneCustomExercise = async (req, res) => {
+    try {
+        const exercise = await ExerciceCustom.findById(req.params.id).populate('id_groupe_musculaire', 'nom');
+        if (!exercise || exercise.categorie !== 'actif') {
+            return res.status(404).json({ message: 'Exercice custom not found or not active' });
+        }
+        res.status(200).json(exercise);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.deleteCustomExercise = async (req, res) => {
+    try {
+        const exercise = await ExerciceCustom.findById(req.params.id);
+        if (!exercise) {
+            return res.status(404).json({ message: 'Exercice custom not found' });
+        }
+
+        exercise.categorie = 'supprime';
+        await exercise.save();
+
+        res.status(200).json({ message: 'Exercice custom deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
