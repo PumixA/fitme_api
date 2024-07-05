@@ -6,6 +6,7 @@ const exerciceSchema = new mongoose.Schema({
     photo: { type: String },
     id_groupe_musculaire: [{ type: mongoose.Schema.Types.ObjectId, ref: 'groupe_musculaire' }],
     lien_video: { type: String },
+    date_creation: { type: Date, required: true, default: Date.now },
     date_modification: { type: Date, required: true, default: Date.now }
 });
 
