@@ -9,5 +9,6 @@ const upload = multer({ dest: 'uploads/exercice_custom/' });
 
 router.post('/add', authenticateJWT, checkRoleUser, upload.single('photo'), exerciceCustomController.addCustomExercise);
 router.post('/addfromexercice/:id', authenticateJWT, checkRoleUser, exerciceCustomController.addCustomExerciseFromExercice);
+router.put('/edit/:id', authenticateJWT, checkRoleUser, upload.single('photo'), exerciceCustomController.editCustomExercise);
 
 module.exports = router;
