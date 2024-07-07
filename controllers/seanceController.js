@@ -134,3 +134,42 @@ const adjustExerciseOrder = async (seanceId, exerciceId, newOrder) => {
         await exerciceList[i].save();
     }
 };
+
+exports.getOneSeance = async (req, res) => {
+    const seanceId = req.params.id;
+
+    try {
+        const seance = await Seance.findById(seanceId);
+        if (!seance || seance.status !== 'actif') {
+            return res.status(404).json({ message: 'Seance not found or not active' });
+        }
+
+        const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId }).populate('id_exercice_custom');
+        const exercices = exercicesCustomSeance.filter(ex => ex.id_exercice_custom.categorie === 'actif');
+
+        res.status(200).json({
+            seance,
+            exercices
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.deleteSeance = async (req, res) => {
+    const seanceId = req.params.id;
+
+    try {
+        const seance = await Seance.findById(seanceId);
+        if (!seance) {
+            return res.status(404).json({ message: 'Seance not found' });
+        }
+
+        seance.status = 'supprime';
+        await seance.save();
+
+        res.status(200).json({ message: 'Seance deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
