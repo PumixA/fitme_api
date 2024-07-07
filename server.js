@@ -42,7 +42,6 @@ app.use('/api/exercice_custom', exerciceCustomRoutes);
 app.use('/api/seance', seanceRoutes);
 
 // Administrateur
-
 app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/demandes_invitation', adminDemandesInvitaionRoutes);
 app.use('/api/admin/groupe_musculaire', adminGroupeMusculaireRoutes);

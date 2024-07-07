@@ -36,14 +36,13 @@ exports.addCustomExercise = async (req, res) => {
             const validExtensions = ['.jpg', '.png'];
 
             if (!validExtensions.includes(fileExtension)) {
-                await fs.unlink(file.path);  // Delete the invalid file
-                return res.status(400).json({ message: 'Invalid file extension. Only .jpg and .png are allowed.' });
+                await fs.unlink(file.path);
+                return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
             }
 
             photoFile = `${newCustomExercise._id}${fileExtension}`;
             const uploadPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', photoFile);
 
-            // Resize and crop the image to 500x500 pixels
             await sharp(file.path)
                 .resize(500, 500, {
                     fit: sharp.fit.cover,
@@ -51,18 +50,17 @@ exports.addCustomExercise = async (req, res) => {
                 })
                 .toFile(uploadPath);
 
-            // Delete the temporary file
             await fs.unlink(file.path);
 
             newCustomExercise.photo = photoFile;
             await newCustomExercise.save();
         }
 
-        res.status(201).json({ message: 'Custom exercise created successfully', newCustomExercise });
+        res.status(201).json({ message: 'Exercice customisé crée avec succés', newCustomExercise });
     } catch (err) {
         if (file) {
             await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
-            await fs.unlink(file.path).catch(console.error);  // Ensure the temporary file is deleted in case of an error
+            await fs.unlink(file.path).catch(console.error);
         }
         res.status(500).json({ message: err.message });
     }
@@ -72,7 +70,7 @@ exports.addCustomExerciseFromExercice = async (req, res) => {
     try {
         const exercice = await Exercice.findById(req.params.id).populate('id_groupe_musculaire', 'nom');
         if (!exercice) {
-            return res.status(404).json({ message: 'Exercice not found' });
+            return res.status(404).json({ message: 'Exercice non trouvé' });
         }
 
         const newCustomExercise = new ExerciceCustom({
@@ -109,7 +107,7 @@ exports.addCustomExerciseFromExercice = async (req, res) => {
             }
         }
 
-        res.status(201).json({ message: 'Custom exercise created successfully from existing exercise', newCustomExercise });
+        res.status(201).json({ message: 'Exercice importé avec succés', newCustomExercise });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -122,11 +120,11 @@ exports.editCustomExercise = async (req, res) => {
     try {
         const exerciceCustom = await ExerciceCustom.findById(req.params.id);
         if (!exerciceCustom) {
-            return res.status(404).json({ message: 'Exercice custom not found' });
+            return res.status(404).json({ message: 'Exercice custom non trouvé' });
         }
 
         if (categorie && categorie !== 'actif') {
-            return res.status(400).json({ message: 'Invalid category. Only "actif" category is allowed.' });
+            return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
         }
 
         let parsedNombreRep = JSON.parse(nombre_rep);
@@ -151,14 +149,13 @@ exports.editCustomExercise = async (req, res) => {
             const validExtensions = ['.jpg', '.png'];
 
             if (!validExtensions.includes(fileExtension)) {
-                await fs.unlink(file.path);  // Delete the invalid file
+                await fs.unlink(file.path);
                 return res.status(400).json({ message: 'Invalid file extension. Only .jpg and .png are allowed.' });
             }
 
             const photoFile = `${exerciceCustom._id}${fileExtension}`;
             const uploadPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', photoFile);
 
-            // Resize and crop the image to 500x500 pixels
             await sharp(file.path)
                 .resize(500, 500, {
                     fit: sharp.fit.cover,
@@ -166,7 +163,6 @@ exports.editCustomExercise = async (req, res) => {
                 })
                 .toFile(uploadPath);
 
-            // Delete the temporary file
             await fs.unlink(file.path);
 
             exerciceCustom.photo = photoFile;
@@ -174,11 +170,11 @@ exports.editCustomExercise = async (req, res) => {
 
         await exerciceCustom.save();
 
-        res.status(200).json({ message: 'Custom exercise updated successfully', exerciceCustom });
+        res.status(200).json({ message: 'Exercice customisé modifié avec succés', exerciceCustom });
     } catch (err) {
         if (file) {
             await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
-            await fs.unlink(file.path).catch(console.error);  // Ensure the temporary file is deleted in case of an error
+            await fs.unlink(file.path).catch(console.error);
         }
         res.status(500).json({ message: err.message });
     }
@@ -197,7 +193,7 @@ exports.getOneCustomExercise = async (req, res) => {
     try {
         const exercise = await ExerciceCustom.findById(req.params.id).populate('id_groupe_musculaire', 'nom');
         if (!exercise || exercise.categorie !== 'actif') {
-            return res.status(404).json({ message: 'Exercice custom not found or not active' });
+            return res.status(404).json({ message: 'Exercice customisé non trouvé' });
         }
         res.status(200).json(exercise);
     } catch (err) {
@@ -215,7 +211,7 @@ exports.deleteCustomExercise = async (req, res) => {
         exercise.categorie = 'supprime';
         await exercise.save();
 
-        res.status(200).json({ message: 'Exercice custom deleted successfully' });
+        res.status(200).json({ message: 'Exercice customisé supprimé avec succés !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

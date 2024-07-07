@@ -42,8 +42,8 @@ exports.addExercise = async (req, res) => {
             const validExtensions = ['.jpg', '.png'];
 
             if (!validExtensions.includes(fileExtension)) {
-                await fs.unlink(file.path);  // Delete the invalid file
-                return res.status(400).json({ message: 'Invalid file extension. Only .jpg and .png are allowed.' });
+                await fs.unlink(file.path);
+                return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
             }
 
             const newExercice = new Exercice({
@@ -67,13 +67,12 @@ exports.addExercise = async (req, res) => {
                 })
                 .toFile(uploadPath);
 
-            // Delete the temporary file
             await fs.unlink(file.path);
 
             newExercice.photo = newFileName;
             await newExercice.save();
 
-            res.status(201).json({ message: 'Exercice created successfully', newExercice });
+            res.status(201).json({ message: 'Exercice crée avec succés', newExercice });
         } else {
             const newExercice = new Exercice({
                 nom,
@@ -86,7 +85,7 @@ exports.addExercise = async (req, res) => {
 
             await newExercice.save();
 
-            res.status(201).json({ message: 'Exercice created successfully', newExercice });
+            res.status(201).json({ message: 'Exercice crée avec succés', newExercice });
         }
     } catch (err) {
         if (file) {
@@ -106,7 +105,7 @@ exports.editExercise = async (req, res) => {
     try {
         const exercice = await Exercice.findById(id);
         if (!exercice) {
-            return res.status(404).json({ message: 'Exercice not found' });
+            return res.status(404).json({ message: 'Exercice non trouvé' });
         }
 
         exercice.nom = nom;
@@ -120,8 +119,8 @@ exports.editExercise = async (req, res) => {
             const validExtensions = ['.jpg', '.png'];
 
             if (!validExtensions.includes(fileExtension)) {
-                await fs.unlink(file.path);  // Delete the invalid file
-                return res.status(400).json({ message: 'Invalid file extension. Only .jpg and .png are allowed.' });
+                await fs.unlink(file.path);
+                return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
             }
 
             const newFileName = `${exercice._id}${fileExtension}`;
@@ -146,7 +145,7 @@ exports.editExercise = async (req, res) => {
 
         await exercice.save();
 
-        res.status(200).json({ message: 'Exercice updated successfully', exercice });
+        res.status(200).json({ message: 'Exercice mis a jour avec succés', exercice });
     } catch (err) {
         if (file) {
 

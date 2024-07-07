@@ -64,7 +64,7 @@ exports.getOneById = (id) => {
             WHERE id = ?`;
         sqlConnection.query(query, [id], (err, result) => {
             if (err) return reject(err);
-            if (result.length === 0) return reject(new Error('User not found'));
+            if (result.length === 0) return reject(new Error('Utilisateur non trouvé'));
             resolve(result[0]);
         });
     });
@@ -85,8 +85,8 @@ exports.updateUserRole = (id, role) => {
         const query = 'UPDATE utilisateur SET role = ? WHERE id = ?';
         sqlConnection.query(query, [role, id], (err, result) => {
             if (err) return reject(err);
-            if (result.affectedRows === 0) return reject(new Error('User not found'));
-            resolve({ message: `User role updated to ${role}` });
+            if (result.affectedRows === 0) return reject(new Error('Utilisateur non trouvé'));
+            resolve({ message: `Le rôle de l'utilisateur a été mis a jour a : ${role}` });
         });
     });
 };
@@ -109,7 +109,7 @@ exports.getUserProfile = (id) => {
             WHERE id = ?`;
         sqlConnection.query(query, [id], (err, result) => {
             if (err) return reject(err);
-            if (result.length === 0) return reject(new Error('User not found'));
+            if (result.length === 0) return reject(new Error('Utilisateur non trouvé'));
             resolve(result[0]);
         });
     });
@@ -131,7 +131,7 @@ exports.updateUserProfile = (userId, userData, photoFile) => {
     return new Promise((resolve, reject) => {
         sqlConnection.query(query, [nom, prenom, age, genre, photoFile, userId], (err, result) => {
             if (err) return reject(err);
-            resolve({ message: 'Profile updated successfully', imc });
+            resolve({ message: 'Le profil a été mis a jour avec succés !', imc });
         });
     });
 };

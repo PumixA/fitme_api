@@ -34,11 +34,11 @@ exports.getAllSeances = async (req, res) => {
     let filter = { status: 'actif', id_utilisateur: userId };
 
     if (nom) {
-        filter.nom = { $regex: nom, $options: 'i' }; // Case-insensitive search
+        filter.nom = { $regex: nom, $options: 'i' };
     }
 
     if (jour_seance) {
-        filter.jour_seance = { $in: jour_seance.split(',').map(Number) }; // Convert to array of numbers
+        filter.jour_seance = { $in: jour_seance.split(',').map(Number) };
     }
 
     try {
@@ -56,11 +56,11 @@ exports.editSeance = async (req, res) => {
     try {
         const seance = await Seance.findById(seanceId);
         if (!seance) {
-            return res.status(404).json({ message: 'Seance not found' });
+            return res.status(404).json({ message: 'Seance non trouvée' });
         }
 
         if (seance.status !== 'actif') {
-            return res.status(400).json({ message: 'Seance is not active' });
+            return res.status(400).json({ message: 'Seance inactive' });
         }
 
         seance.nom = nom || seance.nom;
@@ -92,14 +92,12 @@ exports.editSeance = async (req, res) => {
                 }
             }
 
-            // Adjust ordre to be continuous
             const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId }).sort('ordre');
             for (let i = 0; i < exerciceList.length; i++) {
                 exerciceList[i].ordre = i + 1;
                 await exerciceList[i].save();
             }
 
-            // Reorder based on new positions
             for (const ex of exercices) {
                 let exerciceToUpdate = await ExerciceCustomSeance.findOne({ id_exercice_custom: ex.id_exercice_custom, id_seance: seanceId });
                 if (exerciceToUpdate) {
@@ -108,7 +106,7 @@ exports.editSeance = async (req, res) => {
             }
         }
 
-        res.status(200).json({ message: 'Seance updated successfully', seance });
+        res.status(200).json({ message: 'Seance mise a jour avec succés !', seance });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -117,18 +115,14 @@ exports.editSeance = async (req, res) => {
 const adjustExerciseOrder = async (seanceId, exerciceId, newOrder) => {
     const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId }).sort('ordre');
 
-    // Find the exercise being updated
     const exerciceToUpdate = exerciceList.find(ex => ex._id.toString() === exerciceId.toString());
 
     if (!exerciceToUpdate) return;
 
-    // Remove the exercise being updated from the list
     exerciceList.splice(exerciceList.indexOf(exerciceToUpdate), 1);
 
-    // Insert the exercise at the new position
     exerciceList.splice(newOrder - 1, 0, exerciceToUpdate);
 
-    // Reorder the exercises
     for (let i = 0; i < exerciceList.length; i++) {
         exerciceList[i].ordre = i + 1;
         await exerciceList[i].save();
@@ -141,7 +135,7 @@ exports.getOneSeance = async (req, res) => {
     try {
         const seance = await Seance.findById(seanceId);
         if (!seance || seance.status !== 'actif') {
-            return res.status(404).json({ message: 'Seance not found or not active' });
+            return res.status(404).json({ message: 'Seance non trouvée' });
         }
 
         const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId }).populate('id_exercice_custom');
@@ -168,7 +162,7 @@ exports.deleteSeance = async (req, res) => {
         seance.status = 'supprime';
         await seance.save();
 
-        res.status(200).json({ message: 'Seance deleted successfully' });
+        res.status(200).json({ message: 'Seance supprimée avec succés !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

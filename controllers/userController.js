@@ -10,7 +10,7 @@ exports.userRegister = async (req, res) => {
         const user = await UserModel.userRegister(req.body);
 
         await InvitationsModel.incrementTokenUsage(req.params.token);
-        await InvitationsModel.updateDateUtilisation(req.params.token);  // New line to update date_utilisation
+        await InvitationsModel.updateDateUtilisation(req.params.token);
 
         res.status(201).json(user);
     } catch (err) {
@@ -102,14 +102,13 @@ exports.updateUserProfile = async (req, res) => {
             const validExtensions = ['.jpg', '.png'];
 
             if (!validExtensions.includes(fileExtension)) {
-                await fs.unlink(file.path);  // Delete the invalid file
-                return res.status(400).json({ message: 'Invalid file extension. Only .jpg and .png are allowed.' });
+                await fs.unlink(file.path);
+                return res.status(400).json({ message: 'JPG ou PNG uniqument.' });
             }
 
             photoFile = `${req.user.id}${fileExtension}`;
             const uploadPath = path.join(__dirname, '..', 'uploads', 'users', photoFile);
 
-            // Resize and crop the image to 500x500 pixels
             await sharp(file.path)
                 .resize(500, 500, {
                     fit: sharp.fit.cover,
@@ -117,7 +116,6 @@ exports.updateUserProfile = async (req, res) => {
                 })
                 .toFile(uploadPath);
 
-            // Delete the temporary file
             await fs.unlink(file.path);
         }
 
@@ -126,7 +124,7 @@ exports.updateUserProfile = async (req, res) => {
     } catch (err) {
         if (file) {
             await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
-            await fs.unlink(file.path).catch(console.error);  // Ensure the temporary file is deleted in case of an error
+            await fs.unlink(file.path).catch(console.error);
         }
         res.status(500).json({ message: err.message });
     }

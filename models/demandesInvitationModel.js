@@ -45,8 +45,8 @@ exports.deleteDemandeById = (id) => {
         const query = 'DELETE FROM demandes_invitation WHERE id = ?';
         sqlConnection.query(query, [id], (err, result) => {
             if (err) return reject(err);
-            if (result.affectedRows === 0) return reject(new Error('Demande not found'));
-            resolve({ message: 'Demande deleted successfully' });
+            if (result.affectedRows === 0) return reject(new Error('Demande non trouvé'));
+            resolve({ message: 'Demande supprimé avec succés' });
         });
     });
 };

@@ -1,6 +1,5 @@
 const GroupeMusculaire = require('../models/groupeMusculaireModel');
 
-// Add the new controller function for getting all muscle groups
 exports.getAllGroupeMusculaire = async (req, res) => {
     try {
         const groupesMusculaires = await GroupeMusculaire.find();
@@ -14,7 +13,7 @@ exports.getOneGroupeMusculaire = async (req, res) => {
     try {
         const groupeMusculaire = await GroupeMusculaire.findById(req.params.id);
         if (!groupeMusculaire) {
-            return res.status(404).json({ message: 'Groupe musculaire not found' });
+            return res.status(404).json({ message: 'Groupe musculaire non trouvé' });
         }
         res.status(200).json(groupeMusculaire);
     } catch (err) {
@@ -22,7 +21,6 @@ exports.getOneGroupeMusculaire = async (req, res) => {
     }
 };
 
-// Edit a muscle group by ID
 exports.editGroupeMusculaire = async (req, res) => {
     const { nom } = req.body;
     try {
@@ -32,15 +30,14 @@ exports.editGroupeMusculaire = async (req, res) => {
             { new: true }
         );
         if (!groupeMusculaire) {
-            return res.status(404).json({ message: 'Groupe musculaire not found' });
+            return res.status(404).json({ message: 'Groupe musculaire non trouvé' });
         }
-        res.status(200).json({ message: 'Groupe musculaire updated successfully', groupeMusculaire });
+        res.status(200).json({ message: 'Groupe musculaire modifié avec succés !', groupeMusculaire });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
 
-// Add a new muscle group
 exports.addGroupeMusculaire = async (req, res) => {
     const { nom } = req.body;
     try {
@@ -50,7 +47,7 @@ exports.addGroupeMusculaire = async (req, res) => {
             date_modification: Date.now()
         });
         await newGroupeMusculaire.save();
-        res.status(201).json({ message: 'Groupe musculaire created successfully', newGroupeMusculaire });
+        res.status(201).json({ message: 'Groupe musculaire crée avec succés', newGroupeMusculaire });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

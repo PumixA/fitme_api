@@ -10,7 +10,7 @@ const checkStatusSeance = (req, res, next) => {
         }
 
         if (results.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
         const { id_status_seance } = results[0];

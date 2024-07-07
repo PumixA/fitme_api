@@ -39,7 +39,7 @@ exports.checkTokenValid = (token) => {
         const query = 'SELECT * FROM invitations WHERE token = ?';
         sqlConnection.query(query, [token], (err, result) => {
             if (err) return reject(err);
-            if (result.length === 0) return reject(new Error('Invalid token'));
+            if (result.length === 0) return reject(new Error('Token invalide'));
             resolve(result[0]);
         });
     });

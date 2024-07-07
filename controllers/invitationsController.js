@@ -91,7 +91,7 @@ exports.getOneInvitation = async (req, res) => {
     try {
         const invitation = await InvitationsModel.getOneInvitation(req.params.id);
         if (!invitation) {
-            return res.status(404).json({ message: 'Invitation not found' });
+            return res.status(404).json({ message: 'Invitation non trouvée' });
         }
         const baseUrl = 'http://localhost:4000/api/users/register/';
         invitation.registrationLink = `${baseUrl}${invitation.token}`;
@@ -110,7 +110,7 @@ exports.editInvitation = async (req, res) => {
         if (!updatedInvitation) {
             return res.status(404).json({ message: 'Invitation not found' });
         }
-        res.status(200).json({ message: 'Invitation updated successfully' });
+        res.status(200).json({ message: 'Invitation mise a jour avec succès !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

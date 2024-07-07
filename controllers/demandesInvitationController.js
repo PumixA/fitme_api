@@ -1,5 +1,4 @@
 const DemandesInvitationModel = require('../models/demandesInvitationModel');
-const UserModel = require("../models/userModel");
 
 exports.sendInvitation = async (req, res) => {
     const { email } = req.body;
