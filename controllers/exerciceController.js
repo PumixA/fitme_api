@@ -1,6 +1,8 @@
 const Exercice = require('../models/exerciceModel');
 const path = require('path');
 const fs = require('fs').promises;
+const fs2 = require('fs');
+
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 
@@ -37,7 +39,19 @@ exports.addExercise = async (req, res) => {
     const file = req.file;
 
     try {
+        const newExercice = new Exercice({
+            nom,
+            description,
+            id_groupe_musculaire,
+            lien_video,
+            date_creation: Date.now(),
+            date_modification: Date.now()
+        });
+
+        await newExercice.save();
+
         if (file) {
+            console.log('Original filename:', file.originalname);
             const fileExtension = path.extname(file.originalname).toLowerCase();
             const validExtensions = ['.jpg', '.png'];
 
@@ -46,51 +60,34 @@ exports.addExercise = async (req, res) => {
                 return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
             }
 
-            const newExercice = new Exercice({
-                nom,
-                description,
-                id_groupe_musculaire,
-                lien_video,
-                date_creation: Date.now(),
-                date_modification: Date.now()
-            });
+            const photoFile = `${newExercice._id}${fileExtension}`;
+            const uploadPath = path.join(__dirname, '..', 'uploads', 'exercices', photoFile);
+            const tempCropPath = path.join(__dirname, '..', 'uploads', 'exercices', `temp_${photoFile}`);
 
-            await newExercice.save();
+            console.log('Saving file with _id extension...');
+            await fs.rename(file.path, uploadPath);
 
-            const newFileName = `${newExercice._id}${fileExtension}`;
-            const uploadPath = path.join(__dirname, '..', 'uploads', 'exercices', newFileName);
-
-            await sharp(file.path)
+            console.log('Cropping and resizing the image...');
+            await sharp(uploadPath)
                 .resize(500, 500, {
                     fit: sharp.fit.cover,
                     position: sharp.strategy.entropy
                 })
-                .toFile(uploadPath);
+                .toFile(tempCropPath);
 
-            await fs.unlink(file.path);
+            console.log('Overwriting the original file with the cropped image...');
+            await fs.rename(tempCropPath, uploadPath);
 
-            newExercice.photo = newFileName;
+            console.log('Processed file path:', uploadPath);
+
+            newExercice.photo = photoFile;
             await newExercice.save();
-
-            res.status(201).json({ message: 'Exercice crée avec succés', newExercice });
-        } else {
-            const newExercice = new Exercice({
-                nom,
-                description,
-                id_groupe_musculaire,
-                lien_video,
-                date_creation: Date.now(),
-                date_modification: Date.now()
-            });
-
-            await newExercice.save();
-
-            res.status(201).json({ message: 'Exercice crée avec succés', newExercice });
         }
-    } catch (err) {
-        if (file) {
 
-            await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
+        res.status(201).json({ message: 'Exercice créé avec succès', newExercice });
+    } catch (err) {
+        console.error('Error:', err.message);
+        if (file) {
             await fs.unlink(file.path).catch(console.error);
         }
         res.status(500).json({ message: err.message });
@@ -105,6 +102,9 @@ exports.editExercise = async (req, res) => {
     try {
         const exercice = await Exercice.findById(id);
         if (!exercice) {
+            if (file) {
+                await fs.unlink(file.path).catch(console.error);
+            }
             return res.status(404).json({ message: 'Exercice non trouvé' });
         }
 
@@ -148,10 +148,9 @@ exports.editExercise = async (req, res) => {
         res.status(200).json({ message: 'Exercice mis a jour avec succés', exercice });
     } catch (err) {
         if (file) {
-
-            await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
             await fs.unlink(file.path).catch(console.error);
         }
         res.status(500).json({ message: err.message });
     }
 };
+

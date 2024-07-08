@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const exerciceCustomSchema = new mongoose.Schema({
-    id_utilisateur: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    id_utilisateur: { type: String, required: true },
     nom: { type: String, required: true },
     description: { type: String },
     photo: { type: String },
