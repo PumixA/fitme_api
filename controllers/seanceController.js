@@ -107,7 +107,6 @@ exports.editSeance = async (req, res) => {
     }
 };
 
-
 const adjustExerciseOrder = async (seanceId, exerciceId, newOrder) => {
     const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif', ordre: { $ne: null } }).sort('ordre');
 
@@ -146,7 +145,6 @@ exports.getOneSeance = async (req, res) => {
     }
 };
 
-
 exports.deleteSeance = async (req, res) => {
     const seanceId = req.params.id;
 
@@ -159,7 +157,15 @@ exports.deleteSeance = async (req, res) => {
         seance.status = 'supprime';
         await seance.save();
 
-        res.status(200).json({ message: 'Séance supprimée avec succès !' });
+        const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId });
+
+        for (const ex of exercicesCustomSeance) {
+            ex.status = 'supprime';
+            ex.ordre = null;
+            await ex.save();
+        }
+
+        res.status(200).json({ message: 'Séance et exercices associés supprimés avec succès !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
