@@ -1,7 +1,6 @@
 const Exercice = require('../models/exerciceModel');
 const path = require('path');
 const fs = require('fs').promises;
-const fs2 = require('fs');
 
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
@@ -81,6 +80,9 @@ exports.addExercise = async (req, res) => {
             console.log('Processed file path:', uploadPath);
 
             newExercice.photo = photoFile;
+            newExercice.photo_original_name = file.originalname;
+            newExercice.photo_extension = fileExtension;
+
             await newExercice.save();
         }
 
