@@ -143,3 +143,19 @@ exports.getUserById = (userId) => {
         });
     });
 }
+
+exports.updateUserStatusSeance = (userId, statusSeanceId) => {
+    return new Promise((resolve, reject) => {
+        const updateUserStatusSeanceQuery = 'UPDATE utilisateur SET id_status_seance = ? WHERE id = ?';
+        sqlConnection.query(updateUserStatusSeanceQuery, [statusSeanceId.toString(), userId], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result);
+        });
+    });
+};
+
+
+
+

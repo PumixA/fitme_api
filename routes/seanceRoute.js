@@ -12,4 +12,6 @@ router.get('/getone/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seance
 router.put('/delete/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.deleteSeance);
 router.put('/deleteExercice/:id_seance/:id_exercice_custom', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.deleteExerciceFromSeance);
 
+router.post('/start/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.startSeance);
+
 module.exports = router;

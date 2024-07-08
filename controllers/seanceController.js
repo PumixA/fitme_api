@@ -1,6 +1,8 @@
 const Seance = require('../models/seanceModel');
 const ExerciceCustom = require('../models/exerciceCustomModel');
 const ExerciceCustomSeance = require('../models/exerciceCustomSeanceModel');
+const StatusSeance = require('../models/statusSeanceModel');
+const UserModel = require('../models/userModel');
 
 exports.addSeance = async (req, res) => {
     const { nom, jour_seance } = req.body;
@@ -197,6 +199,37 @@ exports.deleteExerciceFromSeance = async (req, res) => {
         }
 
         res.status(200).json({ message: 'Exercice customisé supprimé de la séance avec succès !' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.startSeance = async (req, res) => {
+    const seanceId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        const seance = await Seance.findById(seanceId);
+        if (!seance || seance.status !== 'actif') {
+            return res.status(404).json({ message: 'Séance non trouvée ou inactive' });
+        }
+
+        const newStatusSeance = new StatusSeance({
+            id_utilisateur: userId,
+            id_seance: seanceId,
+            status: 'en_cours',
+            date_start: Date.now(),
+            date_end: null
+        });
+
+        await newStatusSeance.save();
+
+        try {
+            await UserModel.updateUserStatusSeance(userId, newStatusSeance._id);
+            res.status(201).json({ message: 'Séance commencée avec succès', statusSeance: newStatusSeance });
+        } catch (err) {
+            res.status(500).json({ message: 'Erreur lors de la mise à jour du statut de l\'utilisateur', error: err });
+        }
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
