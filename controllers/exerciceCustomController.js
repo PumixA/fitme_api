@@ -1,5 +1,6 @@
 const Exercice = require('../models/exerciceModel');
 const ExerciceCustom = require('../models/exerciceCustomModel');
+const GroupeMusculaire = require('../models/groupeMusculaireModel');
 const path = require('path');
 const fs = require('fs').promises;
 const sharp = require('sharp');
@@ -29,8 +30,6 @@ exports.addCustomExercise = async (req, res) => {
 
         await newCustomExercise.save();
 
-        let photoFile = null;
-
         if (file) {
             const fileExtension = path.extname(file.originalname).toLowerCase();
             const validExtensions = ['.jpg', '.png'];
@@ -40,26 +39,28 @@ exports.addCustomExercise = async (req, res) => {
                 return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
             }
 
-            photoFile = `${newCustomExercise._id}${fileExtension}`;
+            const photoFile = `${newCustomExercise._id}${fileExtension}`;
             const uploadPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', photoFile);
+            const tempCropPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', `temp_${photoFile}`);
 
-            await sharp(file.path)
+            await fs.rename(file.path, uploadPath);
+
+            await sharp(uploadPath)
                 .resize(500, 500, {
                     fit: sharp.fit.cover,
                     position: sharp.strategy.entropy
                 })
-                .toFile(uploadPath);
+                .toFile(tempCropPath);
 
-            await fs.unlink(file.path);
+            await fs.rename(tempCropPath, uploadPath);
 
             newCustomExercise.photo = photoFile;
             await newCustomExercise.save();
         }
 
-        res.status(201).json({ message: 'Exercice customisé crée avec succés', newCustomExercise });
+        res.status(201).json({ message: 'Exercice customisé créé avec succès', newCustomExercise });
     } catch (err) {
         if (file) {
-            await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
             await fs.unlink(file.path).catch(console.error);
         }
         res.status(500).json({ message: err.message });
@@ -107,7 +108,7 @@ exports.addCustomExerciseFromExercice = async (req, res) => {
             }
         }
 
-        res.status(201).json({ message: 'Exercice importé avec succés', newCustomExercise });
+        res.status(201).json({ message: 'Exercice importé avec succès', newCustomExercise });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -155,25 +156,27 @@ exports.editCustomExercise = async (req, res) => {
 
             const photoFile = `${exerciceCustom._id}${fileExtension}`;
             const uploadPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', photoFile);
+            const tempCropPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', `temp_${photoFile}`);
 
-            await sharp(file.path)
+            await fs.rename(file.path, uploadPath);
+
+            await sharp(uploadPath)
                 .resize(500, 500, {
                     fit: sharp.fit.cover,
                     position: sharp.strategy.entropy
                 })
-                .toFile(uploadPath);
+                .toFile(tempCropPath);
 
-            await fs.unlink(file.path);
+            await fs.rename(tempCropPath, uploadPath);
 
             exerciceCustom.photo = photoFile;
         }
 
         await exerciceCustom.save();
 
-        res.status(200).json({ message: 'Exercice customisé modifié avec succés', exerciceCustom });
+        res.status(200).json({ message: 'Exercice customisé modifié avec succès', exerciceCustom });
     } catch (err) {
         if (file) {
-            await fs.open(file.path, 'r').then(fd => fd.close()).catch(console.error);
             await fs.unlink(file.path).catch(console.error);
         }
         res.status(500).json({ message: err.message });
@@ -182,7 +185,7 @@ exports.editCustomExercise = async (req, res) => {
 
 exports.getAllCustomExercises = async (req, res) => {
     try {
-        const exercises = await ExerciceCustom.find({ categorie: 'actif' }).populate('id_groupe_musculaire', 'nom');
+        const exercises = await ExerciceCustom.find({ categorie: 'actif', id_utilisateur: req.user.id }).populate('id_groupe_musculaire', 'nom');
         res.status(200).json(exercises);
     } catch (err) {
         res.status(500).json({ message: err.message });

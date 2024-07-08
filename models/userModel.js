@@ -115,23 +115,32 @@ exports.getUserProfile = (id) => {
     });
 };
 
-exports.updateUserProfile = (userId, userData, photoFile) => {
-    const { nom, prenom, age, genre, taille, poids } = userData;
-    let imc = null;
-
-    if (taille && poids) {
-        imc = (poids / ((taille / 100) ** 2)).toFixed(2);
-    }
-
-    const query = `
-        UPDATE utilisateur
-        SET nom = ?, prenom = ?, age = ?, genre = ?, photo_profil = ?, date_modification = NOW()
-        WHERE id = ?`;
-
+exports.updateUserProfile = (userId, profileData) => {
     return new Promise((resolve, reject) => {
-        sqlConnection.query(query, [nom, prenom, age, genre, photoFile, userId], (err, result) => {
+        const { nom, prenom, age, genre, photo_profil, date_modification } = profileData;
+
+        const query = `
+            UPDATE utilisateur 
+            SET nom = ?, prenom = ?, age = ?, genre = ?, photo_profil = ?, date_modification = ?
+            WHERE id = ?
+        `;
+        const values = [nom, prenom, age, genre, photo_profil, date_modification, userId];
+
+        sqlConnection.query(query, values, (err, result) => {
             if (err) return reject(err);
-            resolve({ message: 'Le profil a été mis a jour avec succés !', imc });
+            resolve({ message: 'Profil utilisateur mis à jour avec succès' });
         });
     });
 };
+
+
+exports.getUserById = (userId) => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT * FROM utilisateur WHERE id = ?`;
+        sqlConnection.query(query, [userId], (err, results) => {
+            if (err) return reject(err);
+            if (results.length === 0) return resolve(null);
+            resolve(results[0]);
+        });
+    });
+}
