@@ -54,13 +54,9 @@ exports.editSeance = async (req, res) => {
     const seanceId = req.params.id;
 
     try {
-        const seance = await Seance.findById(seanceId);
+        const seance = await Seance.findOne({ _id: seanceId, id_utilisateur: req.user.id, status: 'actif' });
         if (!seance) {
-            return res.status(404).json({ message: 'Seance non trouvée' });
-        }
-
-        if (seance.status !== 'actif') {
-            return res.status(400).json({ message: 'Seance inactive' });
+            return res.status(404).json({ message: 'Séance non trouvée' });
         }
 
         seance.nom = nom || seance.nom;
@@ -71,9 +67,9 @@ exports.editSeance = async (req, res) => {
 
         if (exercices && exercices.length) {
             for (const ex of exercices) {
-                const exerciceCustom = await ExerciceCustom.findById(ex.id_exercice_custom);
-                if (!exerciceCustom || exerciceCustom.categorie !== 'actif') {
-                    return res.status(400).json({ message: `Exercice custom with id ${ex.id_exercice_custom} is not active or does not exist` });
+                const exerciceCustom = await ExerciceCustom.findOne({ _id: ex.id_exercice_custom, id_utilisateur: req.user.id, categorie: 'actif' });
+                if (!exerciceCustom) {
+                    return res.status(400).json({ message: `Exercice custom with id ${ex.id_exercice_custom} is not active, does not exist, or does not belong to the user` });
                 }
 
                 let existingExercice = await ExerciceCustomSeance.findOne({ id_exercice_custom: ex.id_exercice_custom, id_seance: seanceId });
@@ -106,7 +102,7 @@ exports.editSeance = async (req, res) => {
             }
         }
 
-        res.status(200).json({ message: 'Seance mise a jour avec succés !', seance });
+        res.status(200).json({ message: 'Séance mise à jour avec succès !', seance });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -133,9 +129,9 @@ exports.getOneSeance = async (req, res) => {
     const seanceId = req.params.id;
 
     try {
-        const seance = await Seance.findById(seanceId);
-        if (!seance || seance.status !== 'actif') {
-            return res.status(404).json({ message: 'Seance non trouvée' });
+        const seance = await Seance.findOne({ _id: seanceId, id_utilisateur: req.user.id, status: 'actif' });
+        if (!seance) {
+            return res.status(404).json({ message: 'Séance non trouvée' });
         }
 
         const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId }).populate('id_exercice_custom');
@@ -154,16 +150,17 @@ exports.deleteSeance = async (req, res) => {
     const seanceId = req.params.id;
 
     try {
-        const seance = await Seance.findById(seanceId);
+        const seance = await Seance.findOne({ _id: seanceId, id_utilisateur: req.user.id });
         if (!seance) {
-            return res.status(404).json({ message: 'Seance not found' });
+            return res.status(404).json({ message: 'Séance non trouvée ou non autorisée' });
         }
 
         seance.status = 'supprime';
         await seance.save();
 
-        res.status(200).json({ message: 'Seance supprimée avec succés !' });
+        res.status(200).json({ message: 'Séance supprimée avec succès !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
+

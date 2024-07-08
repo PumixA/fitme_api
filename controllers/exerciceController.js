@@ -36,17 +36,6 @@ exports.addExercise = async (req, res) => {
     const file = req.file;
 
     try {
-        const newExercice = new Exercice({
-            nom,
-            description,
-            id_groupe_musculaire,
-            lien_video,
-            date_creation: Date.now(),
-            date_modification: Date.now()
-        });
-
-        await newExercice.save();
-
         if (file) {
             const fileExtension = path.extname(file.originalname).toLowerCase();
             const validExtensions = ['.jpg', '.png'];
@@ -55,6 +44,17 @@ exports.addExercise = async (req, res) => {
                 await fs.unlink(file.path);
                 return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
             }
+
+            const newExercice = new Exercice({
+                nom,
+                description,
+                id_groupe_musculaire,
+                lien_video,
+                date_creation: Date.now(),
+                date_modification: Date.now()
+            });
+
+            await newExercice.save();
 
             const photoFile = `${newExercice._id}${fileExtension}`;
             const uploadPath = path.join(__dirname, '..', 'uploads', 'exercices', photoFile);
@@ -76,9 +76,22 @@ exports.addExercise = async (req, res) => {
             newExercice.photo_extension = fileExtension;
 
             await newExercice.save();
-        }
 
-        res.status(201).json({ message: 'Exercice créé avec succès', newExercice });
+            res.status(201).json({ message: 'Exercice créé avec succès', newExercice });
+        } else {
+            // Si aucun fichier n'est fourni, créez l'exercice sans photo
+            const newExercice = new Exercice({
+                nom,
+                description,
+                id_groupe_musculaire,
+                lien_video,
+                date_creation: Date.now(),
+                date_modification: Date.now()
+            });
+
+            await newExercice.save();
+            res.status(201).json({ message: 'Exercice créé avec succès', newExercice });
+        }
     } catch (err) {
         if (file) {
             await fs.unlink(file.path).catch(console.error);
@@ -101,12 +114,6 @@ exports.editExercise = async (req, res) => {
             return res.status(404).json({ message: 'Exercice non trouvé' });
         }
 
-        exercice.nom = nom;
-        exercice.description = description;
-        exercice.id_groupe_musculaire = id_groupe_musculaire;
-        exercice.lien_video = lien_video;
-        exercice.date_modification = Date.now();
-
         if (file) {
             const fileExtension = path.extname(file.originalname).toLowerCase();
             const validExtensions = ['.jpg', '.png'];
@@ -120,8 +127,10 @@ exports.editExercise = async (req, res) => {
             const uploadPath = path.join(__dirname, '..', 'uploads', 'exercices', photoFile);
             const tempCropPath = path.join(__dirname, '..', 'uploads', 'exercices', `temp_${photoFile}`);
 
+            // Save the new image over the previous one
             await fs.rename(file.path, uploadPath);
 
+            // Crop and resize the image
             await sharp(uploadPath)
                 .resize(500, 500, {
                     fit: sharp.fit.cover,
@@ -129,12 +138,20 @@ exports.editExercise = async (req, res) => {
                 })
                 .toFile(tempCropPath);
 
+            // Overwrite the original file with the cropped image
             await fs.rename(tempCropPath, uploadPath);
 
             exercice.photo = photoFile;
             exercice.photo_original_name = file.originalname;
             exercice.photo_extension = fileExtension;
         }
+
+        // Update exercise details
+        exercice.nom = nom;
+        exercice.description = description;
+        exercice.id_groupe_musculaire = id_groupe_musculaire;
+        exercice.lien_video = lien_video;
+        exercice.date_modification = Date.now();
 
         await exercice.save();
 
@@ -146,3 +163,4 @@ exports.editExercise = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+

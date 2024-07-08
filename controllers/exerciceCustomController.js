@@ -28,8 +28,6 @@ exports.addCustomExercise = async (req, res) => {
             categorie: 'actif'
         });
 
-        await newCustomExercise.save();
-
         if (file) {
             const fileExtension = path.extname(file.originalname).toLowerCase();
             const validExtensions = ['.jpg', '.png'];
@@ -43,6 +41,7 @@ exports.addCustomExercise = async (req, res) => {
             const uploadPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', photoFile);
             const tempCropPath = path.join(__dirname, '..', 'uploads', 'exercice_custom', `temp_${photoFile}`);
 
+            await newCustomExercise.save();
             await fs.rename(file.path, uploadPath);
 
             await sharp(uploadPath)
@@ -55,6 +54,8 @@ exports.addCustomExercise = async (req, res) => {
             await fs.rename(tempCropPath, uploadPath);
 
             newCustomExercise.photo = photoFile;
+            await newCustomExercise.save();
+        } else {
             await newCustomExercise.save();
         }
 
@@ -119,30 +120,12 @@ exports.editCustomExercise = async (req, res) => {
     const file = req.file;
 
     try {
-        const exerciceCustom = await ExerciceCustom.findById(req.params.id);
-        if (!exerciceCustom) {
-            return res.status(404).json({ message: 'Exercice custom non trouvé' });
-        }
-
-        if (categorie && categorie !== 'actif') {
-            return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
-        }
-
-        let parsedNombreRep = JSON.parse(nombre_rep);
-        let parsedPoids = JSON.parse(poids);
-
-        exerciceCustom.nom = nom;
-        exerciceCustom.description = description;
-        exerciceCustom.id_groupe_musculaire = id_groupe_musculaire;
-        exerciceCustom.lien_video = lien_video;
-        exerciceCustom.nombre_series = nombre_series;
-        exerciceCustom.nombre_rep = parsedNombreRep;
-        exerciceCustom.temps_repos = temps_repos;
-        exerciceCustom.poids = parsedPoids;
-        exerciceCustom.date_modification = Date.now();
-
-        if (categorie) {
-            exerciceCustom.categorie = categorie;
+        const exerciceCustom = await ExerciceCustom.findOne({ _id: req.params.id, id_utilisateur: req.user.id });
+        if (!exerciceCustom || exerciceCustom.categorie !== 'actif') {
+            if (file) {
+                await fs.unlink(file.path).catch(console.error);
+            }
+            return res.status(404).json({ message: 'Exercice custom non trouvé ou inactif' });
         }
 
         if (file) {
@@ -151,7 +134,7 @@ exports.editCustomExercise = async (req, res) => {
 
             if (!validExtensions.includes(fileExtension)) {
                 await fs.unlink(file.path);
-                return res.status(400).json({ message: 'Invalid file extension. Only .jpg and .png are allowed.' });
+                return res.status(400).json({ message: 'Uniquement JPG ou PNG' });
             }
 
             const photoFile = `${exerciceCustom._id}${fileExtension}`;
@@ -170,6 +153,23 @@ exports.editCustomExercise = async (req, res) => {
             await fs.rename(tempCropPath, uploadPath);
 
             exerciceCustom.photo = photoFile;
+        }
+
+        let parsedNombreRep = JSON.parse(nombre_rep);
+        let parsedPoids = JSON.parse(poids);
+
+        exerciceCustom.nom = nom;
+        exerciceCustom.description = description;
+        exerciceCustom.id_groupe_musculaire = id_groupe_musculaire;
+        exerciceCustom.lien_video = lien_video;
+        exerciceCustom.nombre_series = nombre_series;
+        exerciceCustom.nombre_rep = parsedNombreRep;
+        exerciceCustom.temps_repos = temps_repos;
+        exerciceCustom.poids = parsedPoids;
+        exerciceCustom.date_modification = Date.now();
+
+        if (categorie) {
+            exerciceCustom.categorie = categorie;
         }
 
         await exerciceCustom.save();
@@ -194,7 +194,7 @@ exports.getAllCustomExercises = async (req, res) => {
 
 exports.getOneCustomExercise = async (req, res) => {
     try {
-        const exercise = await ExerciceCustom.findById(req.params.id).populate('id_groupe_musculaire', 'nom');
+        const exercise = await ExerciceCustom.findOne({ _id: req.params.id, id_utilisateur: req.user.id }).populate('id_groupe_musculaire', 'nom');
         if (!exercise || exercise.categorie !== 'actif') {
             return res.status(404).json({ message: 'Exercice customisé non trouvé' });
         }
@@ -206,15 +206,15 @@ exports.getOneCustomExercise = async (req, res) => {
 
 exports.deleteCustomExercise = async (req, res) => {
     try {
-        const exercise = await ExerciceCustom.findById(req.params.id);
+        const exercise = await ExerciceCustom.findOne({ _id: req.params.id, id_utilisateur: req.user.id });
         if (!exercise) {
-            return res.status(404).json({ message: 'Exercice custom not found' });
+            return res.status(404).json({ message: 'Exercice customisé non trouvé' });
         }
 
         exercise.categorie = 'supprime';
         await exercise.save();
 
-        res.status(200).json({ message: 'Exercice customisé supprimé avec succés !' });
+        res.status(200).json({ message: 'Exercice customisé supprimé avec succès !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
