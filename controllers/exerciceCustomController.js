@@ -1,6 +1,6 @@
 const Exercice = require('../models/exerciceModel');
 const ExerciceCustom = require('../models/exerciceCustomModel');
-const GroupeMusculaire = require('../models/groupeMusculaireModel');
+const ExerciceCustomSeance = require('../models/exerciceCustomSeanceModel');
 const path = require('path');
 const fs = require('fs').promises;
 const sharp = require('sharp');
@@ -214,8 +214,31 @@ exports.deleteCustomExercise = async (req, res) => {
         exercise.categorie = 'supprime';
         await exercise.save();
 
+        // Find all related ExerciceCustomSeance entries and update them
+        const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_exercice_custom: exercise._id });
+
+        for (const ex of exercicesCustomSeance) {
+            ex.status = 'supprime';
+            ex.ordre = null;
+            await ex.save();
+
+            // Adjust the order of remaining exercises in the same seance
+            await adjustExerciseOrder(ex.id_seance);
+        }
+
         res.status(200).json({ message: 'Exercice customisé supprimé avec succès !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
+
+const adjustExerciseOrder = async (seanceId) => {
+    const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif' }).sort('ordre');
+
+    for (let i = 0; i < exerciceList.length; i++) {
+        exerciceList[i].ordre = i + 1;
+        await exerciceList[i].save();
+    }
+};
+
+
