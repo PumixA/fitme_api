@@ -76,19 +76,18 @@ exports.editSeance = async (req, res) => {
                 if (existingExercice) {
                     existingExercice.ordre = ex.ordre;
                     existingExercice.status = 'actif';
-                    await existingExercice.save();
                 } else {
-                    const newExerciceCustomSeance = new ExerciceCustomSeance({
+                    existingExercice = new ExerciceCustomSeance({
                         id_exercice_custom: ex.id_exercice_custom,
                         id_seance: seanceId,
                         ordre: ex.ordre,
                         status: 'actif'
                     });
-                    await newExerciceCustomSeance.save();
                 }
+                await existingExercice.save();
             }
 
-            const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId }).sort('ordre');
+            const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif' }).sort('ordre');
             for (let i = 0; i < exerciceList.length; i++) {
                 exerciceList[i].ordre = i + 1;
                 await exerciceList[i].save();
@@ -108,8 +107,9 @@ exports.editSeance = async (req, res) => {
     }
 };
 
+
 const adjustExerciseOrder = async (seanceId, exerciceId, newOrder) => {
-    const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId }).sort('ordre');
+    const exerciceList = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif', ordre: { $ne: null } }).sort('ordre');
 
     const exerciceToUpdate = exerciceList.find(ex => ex._id.toString() === exerciceId.toString());
 
@@ -134,7 +134,7 @@ exports.getOneSeance = async (req, res) => {
             return res.status(404).json({ message: 'Séance non trouvée' });
         }
 
-        const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId }).populate('id_exercice_custom');
+        const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif' }).populate('id_exercice_custom');
         const exercices = exercicesCustomSeance.filter(ex => ex.id_exercice_custom.categorie === 'actif');
 
         res.status(200).json({
@@ -145,6 +145,7 @@ exports.getOneSeance = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
 
 exports.deleteSeance = async (req, res) => {
     const seanceId = req.params.id;
@@ -164,3 +165,33 @@ exports.deleteSeance = async (req, res) => {
     }
 };
 
+exports.deleteExerciceFromSeance = async (req, res) => {
+    const { id_seance, id_exercice_custom } = req.params;
+
+    try {
+        const seance = await Seance.findOne({ _id: id_seance, id_utilisateur: req.user.id });
+        if (!seance) {
+            return res.status(404).json({ message: 'Séance non trouvée ou non autorisée' });
+        }
+
+        const exerciceCustomSeance = await ExerciceCustomSeance.findOne({ id_seance, id_exercice_custom });
+        if (!exerciceCustomSeance) {
+            return res.status(404).json({ message: 'Exercice customisé non trouvé dans la séance' });
+        }
+
+        exerciceCustomSeance.status = 'supprime';
+        exerciceCustomSeance.ordre = null;
+        await exerciceCustomSeance.save();
+
+        // Adjust the order of remaining exercises
+        const remainingExercices = await ExerciceCustomSeance.find({ id_seance, status: 'actif' }).sort('ordre');
+        for (let i = 0; i < remainingExercices.length; i++) {
+            remainingExercices[i].ordre = i + 1;
+            await remainingExercices[i].save();
+        }
+
+        res.status(200).json({ message: 'Exercice customisé supprimé de la séance avec succès !' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
