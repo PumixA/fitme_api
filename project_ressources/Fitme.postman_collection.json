@@ -1,0 +1,1304 @@
+{
+	"info": {
+		"_postman_id": "03ed33e6-9b56-4e91-92ab-6952355a9c9c",
+		"name": "Fitme",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30453933"
+	},
+	"item": [
+		{
+			"name": "Espace Utilisateur",
+			"item": [
+				{
+					"name": "Dashboard",
+					"item": [
+						{
+							"name": "GET SEANCE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/dashboard",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"dashboard"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Utilisateur",
+					"item": [
+						{
+							"name": "GET",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/users/get",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"users",
+										"get"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nom",
+											"value": "Fit Me",
+											"type": "text"
+										},
+										{
+											"key": "prenom",
+											"value": "Utilisateur",
+											"type": "text"
+										},
+										{
+											"key": "age",
+											"value": "22",
+											"type": "text"
+										},
+										{
+											"key": "genre",
+											"value": "homme",
+											"type": "text"
+										},
+										{
+											"key": "photo_profil",
+											"type": "file",
+											"src": "/E:/Telechargemnts/A_professional_athlete_profile_picture.jpg"
+										},
+										{
+											"key": "taille",
+											"value": "175",
+											"type": "text"
+										},
+										{
+											"key": "poids",
+											"value": "70",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/users/edit",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"users",
+										"edit"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Exercices",
+					"item": [
+						{
+							"name": "GET ALL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/exercice/getall",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice",
+										"getall"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ONE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/exercice/getone/668c3b0323a329e1865973bf",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice",
+										"getone",
+										"668c3b0323a329e1865973bf"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Exercices Customisé",
+					"item": [
+						{
+							"name": "GET ALL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/exercice_custom/getall",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice_custom",
+										"getall"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ONE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/exercice_custom/getone/668c428a67ddeeeb9ec3d749",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice_custom",
+										"getone",
+										"668c428a67ddeeeb9ec3d749"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ADD",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nom",
+											"value": "Crunchs",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Allongez-vous sur le dos, les genoux pliés et les pieds à plat sur le sol, croisez les bras sur la poitrine, levez la tête et les épaules du sol en contractant les abdominaux, puis redescendez lentement.",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file",
+											"src": "/E:/Telechargemnts/DALL·E-2024-07-08-21.45.43-A-person-performing-crunches-in-a-gym.jpg"
+										},
+										{
+											"key": "id_groupe_musculaire",
+											"value": "668c384823a329e1865973b3",
+											"type": "text"
+										},
+										{
+											"key": "lien_video",
+											"value": "https://www.youtube.com/watch?v=Xyd_fa5zoEU",
+											"type": "text"
+										},
+										{
+											"key": "nombre_series",
+											"value": "3",
+											"type": "text"
+										},
+										{
+											"key": "nombre_rep",
+											"value": "[10, 12, 15]",
+											"type": "text"
+										},
+										{
+											"key": "temps_repos",
+											"value": "120",
+											"type": "text"
+										},
+										{
+											"key": "poids",
+											"value": "[20, 22, 25]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/exercice_custom/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice_custom",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ADD FROM EXERCICE",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/exercice_custom/addfromexercice/668c3c9a7cf9ee3c4064a1ad",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice_custom",
+										"addfromexercice",
+										"668c3c9a7cf9ee3c4064a1ad"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nom",
+											"value": "Crunch",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Allongez-vous sur le dos, les genoux pliés et les pieds à plat sur le sol, croisez les bras sur la poitrine, levez la tête et les épaules du sol en contractant les abdominaux, puis redescendez lentement.",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file",
+											"src": "/E:/Telechargemnts/10db596b-6a3e-4b73-ae02-6291d8f726e1_1.jpg"
+										},
+										{
+											"key": "id_groupe_musculaire",
+											"value": "668c384823a329e1865973b3",
+											"type": "text"
+										},
+										{
+											"key": "lien_video",
+											"value": "https://www.youtube.com/watch?v=Xyd_fa5zoEU",
+											"type": "text"
+										},
+										{
+											"key": "nombre_series",
+											"value": "3",
+											"type": "text"
+										},
+										{
+											"key": "nombre_rep",
+											"value": "[10, 12, 15]",
+											"type": "text"
+										},
+										{
+											"key": "temps_repos",
+											"value": "120",
+											"type": "text"
+										},
+										{
+											"key": "poids",
+											"value": "[20, 22, 25]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/exercice_custom/edit/668c421567ddeeeb9ec3d744",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice_custom",
+										"edit",
+										"668c421567ddeeeb9ec3d744"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/exercice_custom/delete/668c428a67ddeeeb9ec3d749",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"exercice_custom",
+										"delete",
+										"668c428a67ddeeeb9ec3d749"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Seance",
+					"item": [
+						{
+							"name": "GET ALL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/seance/getall",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"seance",
+										"getall"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ONE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/seance/getone/668c459a0892ef27f98e9258",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"seance",
+										"getone",
+										"668c459a0892ef27f98e9258"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ADD",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nom\": \"Séance du soir\",\r\n    \"jour_seance\": [1, 3, 5]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/seance/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"seance",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"exercices\": [\r\n        {\r\n            \"id_exercice_custom\": \"668c428a67ddeeeb9ec3d749\",\r\n            \"ordre\": 1\r\n        }\r\n    ]\r\n}\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/seance/edit/668c459a0892ef27f98e9258",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"seance",
+										"edit",
+										"668c459a0892ef27f98e9258"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nom\": \"Updated Morning Workout\",\r\n    \"jour_seance\": [1, 3, 5],\r\n    \"exercices\": [\r\n        {\r\n            \"id_exercice_custom\": \"66885e388460a6ce70a2efd4\",\r\n            \"ordre\": 3\r\n        }\r\n    ]\r\n}\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/seance/delete/668c459a0892ef27f98e9258",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"seance",
+										"delete",
+										"668c459a0892ef27f98e9258"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE EXERCICE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nom\": \"Updated Morning Workout\",\r\n    \"jour_seance\": [1, 3, 5],\r\n    \"exercices\": [\r\n        {\r\n            \"id_exercice_custom\": \"66885e388460a6ce70a2efd4\",\r\n            \"ordre\": 3\r\n        }\r\n    ]\r\n}\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/seance/deleteExercice/668c459a0892ef27f98e9258/668c428a67ddeeeb9ec3d749",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"seance",
+										"deleteExercice",
+										"668c459a0892ef27f98e9258",
+										"668c428a67ddeeeb9ec3d749"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Espace Administrateur",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "GET ALL ACTIF",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/actif",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"actif"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "COUNT",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/count",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ALL BANNI",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/banni",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"banni"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ONE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/getone/21",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"getone",
+										"21"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "BAN ONE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/ban/23",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"ban",
+										"23"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UNBAN ONE",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/unban/23",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"unban",
+										"23"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Demandes d'invitation",
+					"item": [
+						{
+							"name": "GET ALL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/demandes_invitation",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"demandes_invitation"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/demandes_invitation/4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"demandes_invitation",
+										"4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Invitations",
+					"item": [
+						{
+							"name": "INVITER",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\" : \"melvin.delorme12@gmail.com\",\r\n    \"limite_utilisation\" : \"3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/inviter",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"inviter"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"limite_utilisation\" : \"1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/inviter/edit/21",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"inviter",
+										"edit",
+										"21"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ALL",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/inviter/getall",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"inviter",
+										"getall"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ONE",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/users/inviter/getone/21",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"users",
+										"inviter",
+										"getone",
+										"21"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Groupe Musculaire",
+					"item": [
+						{
+							"name": "GET ALL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/groupe_musculaire",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"groupe_musculaire"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ONE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/groupe_musculaire/getone/668c382223a329e1865973ab",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"groupe_musculaire",
+										"getone",
+										"668c382223a329e1865973ab"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nom\" : \"Pectoraux\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/groupe_musculaire/edit/668c382223a329e1865973ab",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"groupe_musculaire",
+										"edit",
+										"668c382223a329e1865973ab"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ADD",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nom\" : \"Fessiers\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/groupe_musculaire/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"groupe_musculaire",
+										"add"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Exercice",
+					"item": [
+						{
+							"name": "GET ALL",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/exercice",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"exercice"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ONE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:4000/api/admin/exercice/getone/668c3c9a7cf9ee3c4064a1ad",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"exercice",
+										"getone",
+										"668c3c9a7cf9ee3c4064a1ad"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nom",
+											"value": "Exercice a modifier",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Bla bla description",
+											"type": "text"
+										},
+										{
+											"key": "id_groupe_musculaire",
+											"value": "668c382b23a329e1865973ad",
+											"type": "text"
+										},
+										{
+											"key": "lien_video",
+											"value": "https://www.youtube.com/watch?v=eGo4IYlbE5g",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file",
+											"src": "/E:/Telechargemnts/38208283-c80d-44e3-ac9a-955c8dce2bbc_1.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/exercice/add",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"exercice",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EDIT",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "nom",
+											"value": "Élévations latérales",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Tenez un haltère dans chaque main, les bras le long du corps, puis levez les bras sur les côtés jusqu'à ce qu'ils soient à hauteur des épaules, puis redescendez lentement.",
+											"type": "text"
+										},
+										{
+											"key": "photo",
+											"type": "file",
+											"src": "/E:/Telechargemnts/70da64ef-26f0-49e2-9b81-8a4a393556be.jpg"
+										},
+										{
+											"key": "id_groupe_musculaire",
+											"value": "668c383823a329e1865973af",
+											"type": "text"
+										},
+										{
+											"key": "lien_video",
+											"value": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:4000/api/admin/exercice/edit/668c3c9a7cf9ee3c4064a1ad",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "4000",
+									"path": [
+										"api",
+										"admin",
+										"exercice",
+										"edit",
+										"668c3c9a7cf9ee3c4064a1ad"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Inscription",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pseudo\" : \"Fitme Test 2\",\r\n    \"email\" : \"fitme-test2.com\",\r\n    \"password\" : \"Fitme_1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/users/register/600b8beff2653a68d2a0ff3e374355b99a94d21e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"users",
+						"register",
+						"600b8beff2653a68d2a0ff3e374355b99a94d21e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Connexion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"emailOrPseudo\" : \"fitme-utilisateur@gmail.com\",\r\n    \"password\" : \"Fitme_1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/users/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Demande d'invitation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"fitme-testinvitation@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/invitations/demandes_invitation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"invitations",
+						"demandes_invitation"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsInJvbGUiOiJ1dGlsaXNhdGV1ciIsImlhdCI6MTcyMDQ3Mjc2NCwiZXhwIjoxNzIwNDc2MzY0fQ.VuRP-j7GqxhCXf3_1jYf0u9J6wvYSH4ozb52DY_n0So",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

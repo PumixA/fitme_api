@@ -1,0 +1,91 @@
+[{
+  "_id": {
+    "$oid": "668c382223a329e1865973ab"
+  },
+  "nom": "Pectoraux",
+  "date_creation": {
+    "$date": "2024-07-08T19:04:02.893Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:05:36.777Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668c382b23a329e1865973ad"
+  },
+  "nom": "Dos ",
+  "date_creation": {
+    "$date": "2024-07-08T19:04:11.392Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:04:11.392Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668c383823a329e1865973af"
+  },
+  "nom": "Épaules",
+  "date_creation": {
+    "$date": "2024-07-08T19:04:24.858Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:04:24.858Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668c384123a329e1865973b1"
+  },
+  "nom": "Bras",
+  "date_creation": {
+    "$date": "2024-07-08T19:04:33.419Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:04:33.419Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668c384823a329e1865973b3"
+  },
+  "nom": "Abdominaux",
+  "date_creation": {
+    "$date": "2024-07-08T19:04:40.546Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:04:40.546Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668c384d23a329e1865973b5"
+  },
+  "nom": "Jambes",
+  "date_creation": {
+    "$date": "2024-07-08T19:04:45.121Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:04:45.121Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "668c385223a329e1865973b7"
+  },
+  "nom": "Fessiers",
+  "date_creation": {
+    "$date": "2024-07-08T19:04:50.903Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:04:50.903Z"
+  },
+  "__v": 0
+}]

@@ -1,0 +1,63 @@
+[{
+  "_id": {
+    "$oid": "668c3b0323a329e1865973bf"
+  },
+  "nom": "Développé couché",
+  "description": "Allongez-vous sur un banc, prenez une barre avec une prise légèrement plus large que la largeur des épaules, abaissez-la lentement jusqu'à ce qu'elle touche votre poitrine, puis poussez-la vers le haut jusqu'à ce que vos bras soient complètement étendus.",
+  "id_groupe_musculaire": [
+    {
+      "$oid": "668c382223a329e1865973ab"
+    }
+  ],
+  "lien_video": "https://www.youtube.com/watch?v=4PioZGhkn5Y",
+  "date_creation": {
+    "$date": "2024-07-08T19:16:19.384Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:16:19.384Z"
+  },
+  "__v": 0,
+  "photo": "668c3b0323a329e1865973bf.jpg"
+},
+{
+  "_id": {
+    "$oid": "668c3c697cf9ee3c4064a1aa"
+  },
+  "nom": "Tractions à la barre fixe",
+  "description": "Saisissez une barre fixe avec une prise légèrement plus large que la largeur des épaules, tirez votre corps vers le haut jusqu'à ce que votre menton dépasse la barre, puis redescendez lentement.",
+  "id_groupe_musculaire": [
+    {
+      "$oid": "668c382b23a329e1865973ad"
+    }
+  ],
+  "lien_video": "https://www.youtube.com/watch?v=eGo4IYlbE5g",
+  "date_creation": {
+    "$date": "2024-07-08T19:22:17.406Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:22:17.406Z"
+  },
+  "__v": 0,
+  "photo": "668c3c697cf9ee3c4064a1aa.jpg"
+},
+{
+  "_id": {
+    "$oid": "668c3c9a7cf9ee3c4064a1ad"
+  },
+  "nom": "Élévations latérales",
+  "description": "Tenez un haltère dans chaque main, les bras le long du corps, puis levez les bras sur les côtés jusqu'à ce qu'ils soient à hauteur des épaules, puis redescendez lentement.",
+  "id_groupe_musculaire": [
+    {
+      "$oid": "668c383823a329e1865973af"
+    }
+  ],
+  "lien_video": "https://www.youtube.com/watch?v=3VcKaXpzqRo",
+  "date_creation": {
+    "$date": "2024-07-08T19:23:06.492Z"
+  },
+  "date_modification": {
+    "$date": "2024-07-08T19:28:46.632Z"
+  },
+  "__v": 1,
+  "photo": "668c3c9a7cf9ee3c4064a1ad.jpg"
+}]
