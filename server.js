@@ -12,6 +12,7 @@ const dashboardRoutes = require('./routes/dashboardRoute');
 const exerciceRoutes = require('./routes/exerciceRoute');
 const exerciceCustomRoutes = require('./routes/exerciceCustomRoute');
 const seanceRoutes = require('./routes/seanceRoute');
+const statRoutes = require('./routes/statRoutes');
 
 const adminUserRoutes = require('./routes/administrateur/userRoute');
 const adminDemandesInvitaionRoutes = require('./routes/administrateur/demandesInvitationRoute');
@@ -40,6 +41,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/exercice', exerciceRoutes);
 app.use('/api/exercice_custom', exerciceCustomRoutes);
 app.use('/api/seance', seanceRoutes);
+app.use('/stat/seance', statRoutes);
 
 // Administrateur
 app.use('/api/admin/users', adminUserRoutes);
