@@ -3,16 +3,17 @@ const router = express.Router();
 const seanceController = require('../controllers/seanceController');
 const authenticateJWT = require('../middlewares/jwt');
 const { checkRoleUser, checkRoleBanni} = require("../middlewares/checkRole");
+const checkStatusSeance = require("../middlewares/checkStatusSeance");
 
 
 router.post('/add', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.addSeance);
 router.get('/getall', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.getAllSeances);
-router.put('/edit/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.editSeance);
+router.put('/edit/:id', authenticateJWT, checkRoleUser, checkRoleBanni, checkStatusSeance, seanceController.editSeance);
 router.get('/getone/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.getOneSeance);
-router.put('/delete/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.deleteSeance);
-router.put('/deleteExercice/:id_seance/:id_exercice_custom', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.deleteExerciceFromSeance);
+router.put('/delete/:id', authenticateJWT, checkRoleUser, checkRoleBanni, checkStatusSeance, seanceController.deleteSeance);
+router.put('/deleteExercice/:id_seance/:id_exercice_custom', authenticateJWT, checkRoleUser, checkRoleBanni, checkStatusSeance, seanceController.deleteExerciceFromSeance);
 
-router.post('/start/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.startSeance);
+router.post('/start/:id', authenticateJWT, checkRoleUser, checkRoleBanni, checkStatusSeance, seanceController.startSeance);
 router.get('/getchrono/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.getChrono);
 router.get('/start/get_exercices/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.getSeanceExercices);
 router.put('/start/do_exercise/edit/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.editExercice);
