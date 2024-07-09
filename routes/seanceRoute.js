@@ -13,5 +13,9 @@ router.put('/delete/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seance
 router.put('/deleteExercice/:id_seance/:id_exercice_custom', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.deleteExerciceFromSeance);
 
 router.post('/start/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.startSeance);
+router.get('/getchrono/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.getChrono);
+router.get('/start/get_exercices/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.getSeanceExercices);
+router.put('/start/do_exercise/edit/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.editExercice);
+router.put('/end/:id', authenticateJWT, checkRoleUser, checkRoleBanni, seanceController.endSeance);
 
 module.exports = router;

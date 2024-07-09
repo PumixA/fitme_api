@@ -144,10 +144,10 @@ exports.getUserById = (userId) => {
     });
 }
 
-exports.updateUserStatusSeance = (userId, statusSeanceId) => {
+exports.updateUserSeance = (userId, seanceId) => {
     return new Promise((resolve, reject) => {
-        const updateUserStatusSeanceQuery = 'UPDATE utilisateur SET id_status_seance = ? WHERE id = ?';
-        sqlConnection.query(updateUserStatusSeanceQuery, [statusSeanceId.toString(), userId], (err, result) => {
+        const updateUserSeanceQuery = 'UPDATE utilisateur SET id_status_seance = ? WHERE id = ?';
+        sqlConnection.query(updateUserSeanceQuery, [seanceId, userId], (err, result) => {
             if (err) {
                 return reject(err);
             }
@@ -155,6 +155,8 @@ exports.updateUserStatusSeance = (userId, statusSeanceId) => {
         });
     });
 };
+
+
 
 
 

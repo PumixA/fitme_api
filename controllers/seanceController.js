@@ -2,6 +2,7 @@ const Seance = require('../models/seanceModel');
 const ExerciceCustom = require('../models/exerciceCustomModel');
 const ExerciceCustomSeance = require('../models/exerciceCustomSeanceModel');
 const StatusSeance = require('../models/statusSeanceModel');
+const StatusExercice = require('../models/statusExerciceModel');
 const UserModel = require('../models/userModel');
 
 exports.addSeance = async (req, res) => {
@@ -209,11 +210,13 @@ exports.startSeance = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        const seance = await Seance.findById(seanceId);
-        if (!seance || seance.status !== 'actif') {
-            return res.status(404).json({ message: 'Séance non trouvée ou inactive' });
+        // Find the seance and ensure it belongs to the logged-in user and is active
+        const seance = await Seance.findOne({ _id: seanceId, id_utilisateur: userId, status: 'actif' });
+        if (!seance) {
+            return res.status(404).json({ message: 'Séance non trouvée ou non autorisée' });
         }
 
+        // Create a new status_seance entry
         const newStatusSeance = new StatusSeance({
             id_utilisateur: userId,
             id_seance: seanceId,
@@ -224,12 +227,222 @@ exports.startSeance = async (req, res) => {
 
         await newStatusSeance.save();
 
+        // Update the user's id_seance
         try {
-            await UserModel.updateUserStatusSeance(userId, newStatusSeance._id);
+            await UserModel.updateUserSeance(userId, seanceId.toString()); // Store seanceId instead of status_seance id
+
+            // Find all exercice_custom_seance entries related to the seanceId
+            const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif' });
+
+            // Create status_exercice entries for each exercice_custom_seance
+            for (const exercice of exercicesCustomSeance) {
+                const newStatusExercice = new StatusExercice({
+                    id_utilisateur: userId,
+                    id_exercice_custom: exercice.id_exercice_custom,
+                    id_status_seance: newStatusSeance._id,
+                    nombre_rep: exercice.nombre_rep,
+                    temps_repos: exercice.temps_repos,
+                    numero_serie: exercice.numero_serie,
+                    temps_effectue: 0,
+                    status: 'non_effectue',
+                    date_start: null,
+                    date_end: null
+                });
+                await newStatusExercice.save();
+            }
+
             res.status(201).json({ message: 'Séance commencée avec succès', statusSeance: newStatusSeance });
         } catch (err) {
             res.status(500).json({ message: 'Erreur lors de la mise à jour du statut de l\'utilisateur', error: err });
         }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getChrono = async (req, res) => {
+    const seanceId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        // Find the status_seance entry
+        const statusSeance = await StatusSeance.findOne({ id_seance: seanceId, id_utilisateur: userId, status: 'en_cours' });
+
+        if (!statusSeance || !statusSeance.date_start) {
+            return res.status(404).json({ message: 'Séance non trouvée ou non en cours' });
+        }
+
+        // Calculate the time difference
+        const dateStart = new Date(statusSeance.date_start);
+        const now = new Date();
+        const timeDifference = Math.floor((now - dateStart) / 1000); // Difference in seconds
+
+        res.status(200).json({
+            date_start: statusSeance.date_start,
+            elapsed_time_seconds: timeDifference
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getSeanceExercices = async (req, res) => {
+    const seanceId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        // Check if the seance is active and belongs to the user
+        const seance = await Seance.findOne({ _id: seanceId, id_utilisateur: userId, status: 'actif' });
+        if (!seance) {
+            return res.status(404).json({ message: 'Séance non trouvée ou non autorisée' });
+        }
+
+        // Get the active status_seance
+        const statusSeance = await StatusSeance.findOne({ id_seance: seanceId, id_utilisateur: userId, status: 'en_cours' });
+        if (!statusSeance) {
+            return res.status(404).json({ message: 'Statut de la séance non trouvé ou non en cours' });
+        }
+
+        // Get active exercice_custom_seance in the correct order
+        const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif' }).sort('ordre').populate('id_exercice_custom');
+
+        // Filter out inactive exercises
+        const exercices = exercicesCustomSeance.filter(ex => ex.id_exercice_custom.categorie === 'actif').map(ex => ({
+            exercice: ex.id_exercice_custom,
+            ordre: ex.ordre,
+            status: 'non effectué'
+        }));
+
+        // Check each exercise status
+        for (let i = 0; i < exercices.length; i++) {
+            const statusExercice = await StatusExercice.findOne({
+                id_utilisateur: userId,
+                id_exercice_custom: exercices[i].exercice._id,
+                id_status_seance: statusSeance._id
+            });
+
+            if (statusExercice) {
+                exercices[i].status = statusExercice.status;
+            }
+        }
+
+        res.status(200).json({
+            seance,
+            exercices
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.editExercice = async (req, res) => {
+    const exerciceCustomId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        // Verify that the exercise exists and belongs to the user
+        const exerciceCustom = await ExerciceCustom.findOne({ _id: exerciceCustomId, id_utilisateur: userId, categorie: 'actif' });
+        if (!exerciceCustom) {
+            return res.status(404).json({ message: 'Exercice customisé non trouvé ou non autorisé' });
+        }
+
+        // Find the related status_exercice entry
+        const statusExercice = await StatusExercice.findOne({ id_exercice_custom: exerciceCustomId, id_utilisateur: userId });
+
+        if (!statusExercice) {
+            return res.status(404).json({ message: 'Statut de l\'exercice non trouvé' });
+        }
+
+        if (statusExercice.status === 'non_effectue') {
+            statusExercice.status = 'en_cours';
+            statusExercice.date_start = Date.now();
+            await statusExercice.save();
+            return res.status(200).json({ message: 'Exercice commencé', statusExercice });
+        }
+
+        if (statusExercice.status === 'en_cours') {
+            const numeroSerie = statusExercice.numero_serie;
+
+            // Check if there are more series to complete
+            if (numeroSerie < exerciceCustom.nombre_series) {
+                // Check if this is the start of a new series
+                if (!statusExercice.nombre_rep[numeroSerie]) {
+                    // Update the current series information
+                    statusExercice.nombre_rep[numeroSerie] = exerciceCustom.nombre_rep[numeroSerie];
+                    statusExercice.poids[numeroSerie] = exerciceCustom.poids[numeroSerie];
+                    statusExercice.temps_repos[numeroSerie] = Date.now();
+                } else {
+                    // Calculate and store the rest time for the current series
+                    const now = Date.now();
+                    const restTime = now - statusExercice.temps_repos[numeroSerie];
+                    statusExercice.temps_repos[numeroSerie] = restTime;
+
+                    // Increment the series number
+                    statusExercice.numero_serie += 1;
+
+                    // Check if all series are completed
+                    if (statusExercice.numero_serie >= exerciceCustom.nombre_series) {
+                        statusExercice.status = 'effectue';
+                        statusExercice.date_end = now;
+                        statusExercice.temps_effectue = statusExercice.date_end - statusExercice.date_start;
+                    }
+                }
+
+                await statusExercice.save();
+                return res.status(200).json({ message: 'Exercice mis à jour', statusExercice });
+            }
+        }
+
+        if (statusExercice.status === 'effectue') {
+            return res.status(200).json({ message: 'Exercice déjà effectué' });
+        }
+
+        return res.status(400).json({ message: 'Statut de l\'exercice invalide' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+exports.endSeance = async (req, res) => {
+    const seanceId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        // Vérifier que la séance appartient à l'utilisateur connecté et est active
+        const seance = await Seance.findOne({ _id: seanceId, id_utilisateur: userId, status: 'actif' });
+        if (!seance) {
+            return res.status(404).json({ message: 'Séance non trouvée ou non autorisée' });
+        }
+
+        // Trouver le status_seance correspondant
+        const statusSeance = await StatusSeance.findOne({ id_seance: seanceId, id_utilisateur: userId, status: 'en_cours' });
+        if (!statusSeance) {
+            return res.status(404).json({ message: 'Statut de la séance non trouvé ou déjà terminé' });
+        }
+
+        // Mettre à jour la date de fin et le statut de la séance
+        statusSeance.date_end = Date.now();
+        statusSeance.status = 'effectue';
+        statusSeance.temps_effectue = statusSeance.date_end - statusSeance.date_start;
+        await statusSeance.save();
+
+        // Mettre à jour le statut de tous les exercices liés à la séance
+        const statusExercices = await StatusExercice.find({ id_status_seance: statusSeance._id, status: { $ne: 'effectue' } });
+        for (const statusExercice of statusExercices) {
+            if (statusExercice.status === 'en_cours') {
+                statusExercice.date_end = Date.now();
+                statusExercice.temps_effectue = statusExercice.date_end - statusExercice.date_start;
+                statusExercice.status = 'effectue';
+            } else if (statusExercice.status === 'non_effectue') {
+                statusExercice.status = 'effectue';
+            }
+            await statusExercice.save();
+        }
+
+        // Mettre à jour l'utilisateur pour passer id_status_seance à null
+        await UserModel.updateUserSeance(userId, null);
+
+        res.status(200).json({ message: 'Séance terminée avec succès' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
