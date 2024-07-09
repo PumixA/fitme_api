@@ -144,10 +144,10 @@ exports.getUserById = (userId) => {
     });
 }
 
-exports.updateUserSeance = (userId, seanceId) => {
+exports.updateUserSeance = (userId, statusSeanceId) => {
     return new Promise((resolve, reject) => {
         const updateUserSeanceQuery = 'UPDATE utilisateur SET id_status_seance = ? WHERE id = ?';
-        sqlConnection.query(updateUserSeanceQuery, [seanceId, userId], (err, result) => {
+        sqlConnection.query(updateUserSeanceQuery, [statusSeanceId, userId], (err, result) => {
             if (err) {
                 return reject(err);
             }

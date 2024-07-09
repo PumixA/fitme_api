@@ -227,9 +227,9 @@ exports.startSeance = async (req, res) => {
 
         await newStatusSeance.save();
 
-        // Update the user's id_seance
+        // Update the user's id_status_seance to the new status_seance's id
         try {
-            await UserModel.updateUserSeance(userId, seanceId.toString()); // Store seanceId instead of status_seance id
+            await UserModel.updateUserSeance(userId, newStatusSeance._id.toString());
 
             // Find all exercice_custom_seance entries related to the seanceId
             const exercicesCustomSeance = await ExerciceCustomSeance.find({ id_seance: seanceId, status: 'actif' });
@@ -242,7 +242,7 @@ exports.startSeance = async (req, res) => {
                     id_status_seance: newStatusSeance._id,
                     nombre_rep: exercice.nombre_rep,
                     temps_repos: exercice.temps_repos,
-                    numero_serie: exercice.numero_serie,
+                    numero_serie: 0, // Initialize to zero
                     temps_effectue: 0,
                     status: 'non_effectue',
                     date_start: null,
@@ -346,8 +346,18 @@ exports.editExercice = async (req, res) => {
             return res.status(404).json({ message: 'Exercice customisé non trouvé ou non autorisé' });
         }
 
+        // Find the current active status_seance for the user
+        const statusSeance = await StatusSeance.findOne({ id_utilisateur: userId, status: 'en_cours' });
+        if (!statusSeance) {
+            return res.status(404).json({ message: 'Aucune séance en cours trouvée pour l\'utilisateur' });
+        }
+
         // Find the related status_exercice entry
-        const statusExercice = await StatusExercice.findOne({ id_exercice_custom: exerciceCustomId, id_utilisateur: userId });
+        const statusExercice = await StatusExercice.findOne({
+            id_exercice_custom: exerciceCustomId,
+            id_status_seance: statusSeance._id,
+            id_utilisateur: userId
+        });
 
         if (!statusExercice) {
             return res.status(404).json({ message: 'Statut de l\'exercice non trouvé' });
