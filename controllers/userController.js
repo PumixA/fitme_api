@@ -18,6 +18,24 @@ exports.userRegister = async (req, res) => {
     }
 };
 
+exports.verifyInvitationToken = async (req, res) => {
+    try {
+        const invitation = await InvitationsModel.checkTokenValid(req.params.token);
+        if (!invitation) {
+            return res.status(400).json({ message: 'Invalid token' });
+        }
+
+        // Vérifier si le nombre d'utilisations est inférieur à la limite
+        if (invitation.nombre_utilisation >= invitation.limite_utilisation) {
+            return res.status(400).json({ message: 'Token usage limit reached' });
+        }
+
+        res.status(200).json({ message: 'Token is valid' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 exports.userLogin = async (req, res) => {
     try {
         const { token } = await UserModel.userLogin(req.body);

@@ -11,6 +11,7 @@ const upload = multer({ dest: 'uploads/users/' });
 
 
 router.post('/register/:token', checkInvitationToken, userController.userRegister);
+router.get('/register/verifytoken/:token', checkInvitationToken, userController.verifyInvitationToken);
 router.post('/login', userController.userLogin);
 
 router.get('/get', authenticateJWT, checkRoleUser, checkRoleBanni, userController.getUserProfile);

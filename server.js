@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const mongoConnect = require('./config/mongo');
@@ -48,6 +49,8 @@ app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/demandes_invitation', adminDemandesInvitaionRoutes);
 app.use('/api/admin/groupe_musculaire', adminGroupeMusculaireRoutes);
 app.use('/api/admin/exercice', adminExerciceRoutes);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(apitoolkitClient.errorHandler);
 

@@ -155,9 +155,3 @@ exports.updateUserSeance = (userId, statusSeanceId) => {
         });
     });
 };
-
-
-
-
-
-

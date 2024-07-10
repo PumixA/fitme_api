@@ -27,7 +27,7 @@ exports.inviter = async (req, res) => {
         const invitation = await InvitationsModel.createInvitation(email || null, limite_utilisation);
 
         if (email) {
-            const tokenUrl = `http://localhost:4000/api/users/register/${invitation.token}`;
+            const tokenUrl = `http://localhost:3000/register/${invitation.token}`;
             const qrCodePath = path.join(__dirname, '../uploads/qr-code.png');
 
             await QRCode.toFile(qrCodePath, tokenUrl);
