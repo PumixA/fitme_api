@@ -14,6 +14,7 @@ const exerciceRoutes = require('./routes/exerciceRoute');
 const exerciceCustomRoutes = require('./routes/exerciceCustomRoute');
 const seanceRoutes = require('./routes/seanceRoute');
 const statRoutes = require('./routes/statRoutes');
+const groupeMusculaireRoutes = require('./routes/groupeMusculaireRoute');
 
 const adminUserRoutes = require('./routes/administrateur/userRoute');
 const adminDemandesInvitaionRoutes = require('./routes/administrateur/demandesInvitationRoute');
@@ -42,7 +43,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/exercice', exerciceRoutes);
 app.use('/api/exercice_custom', exerciceCustomRoutes);
 app.use('/api/seance', seanceRoutes);
-app.use('/stat/seance', statRoutes);
+app.use('/api/stat/seance', statRoutes);
+app.use('/api/groupe_musculaire', groupeMusculaireRoutes);
 
 // Administrateur
 app.use('/api/admin/users', adminUserRoutes);

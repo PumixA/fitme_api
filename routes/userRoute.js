@@ -16,5 +16,7 @@ router.post('/login', userController.userLogin);
 
 router.get('/get', authenticateJWT, checkRoleUser, checkRoleBanni, userController.getUserProfile);
 router.put('/edit', authenticateJWT, checkRoleUser, checkRoleBanni, checkStatusSeance, upload.single('photo_profil'), userController.updateUserProfile);
+router.get('/checkseance', authenticateJWT, checkRoleUser, checkRoleBanni, userController.checkStatusSeance);
+
 
 module.exports = router;

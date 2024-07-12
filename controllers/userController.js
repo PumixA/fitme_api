@@ -1,5 +1,6 @@
 const UserModel = require('../models/userModel');
 const InvitationsModel = require('../models/invitationsModel');
+const StatusSeance = require("../models/statusSeanceModel");
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs').promises;
@@ -174,3 +175,22 @@ exports.updateUserProfile = async (req, res) => {
     }
 };
 
+exports.checkStatusSeance = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const idStatusSeance = await UserModel.getStatusSeance(userId);
+
+        if (!idStatusSeance) {
+            return res.status(200).json({ id_status_seance: null, id_seance: null });
+        }
+
+        const statusSeance = await StatusSeance.findById(idStatusSeance).exec();
+        if (!statusSeance) {
+            return res.status(404).json({ message: 'Status de séance non trouvé' });
+        }
+
+        res.status(200).json({ id_status_seance: idStatusSeance, id_seance: statusSeance.id_seance });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};

@@ -155,3 +155,14 @@ exports.updateUserSeance = (userId, statusSeanceId) => {
         });
     });
 };
+
+exports.getStatusSeance = (userId) => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT id_status_seance FROM utilisateur WHERE id = ?';
+        sqlConnection.query(query, [userId], (err, results) => {
+            if (err) return reject(err);
+            if (results.length === 0) return reject(new Error('Utilisateur non trouvé'));
+            resolve(results[0].id_status_seance);
+        });
+    });
+};
