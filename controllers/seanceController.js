@@ -457,3 +457,42 @@ exports.endSeance = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.getOneExercice = async (req, res) => {
+    const { seanceId, exerciceId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        // Récupérer l'id_status_seance de l'utilisateur connecté
+        const user = await UserModel.getUserById(userId);
+        if (!user.id_status_seance) {
+            return res.status(400).json({ message: "Aucune séance en cours pour cet utilisateur." });
+        }
+
+        // Vérifier si id_status_seance correspond à seanceId
+        const statusSeance = await StatusSeance.findOne({ _id: user.id_status_seance });
+        if (!statusSeance || statusSeance.id_seance.toString() !== seanceId) {
+            return res.status(400).json({ message: "L'ID de la séance en cours ne correspond pas à celui fourni dans l'URL." });
+        }
+
+        // Vérifier si un exercice avec le même id_status_seance existe dans status_exercices
+        const statusExercice = await StatusExercice.findOne({ id_status_seance: user.id_status_seance, id_exercice_custom: exerciceId });
+        if (!statusExercice) {
+            return res.status(404).json({ message: "Exercice non trouvé pour la séance en cours." });
+        }
+
+        // Récupérer les détails de l'exercice dans exercice_custom
+        const exerciceCustom = await ExerciceCustom.findOne({ _id: exerciceId });
+        if (!exerciceCustom) {
+            return res.status(404).json({ message: "Exercice customisé non trouvé." });
+        }
+
+        // Renvoyer les informations combinées
+        res.status(200).json({
+            exerciceCustom,
+            statusExercice
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
