@@ -10,8 +10,10 @@ exports.addCustomExercise = async (req, res) => {
     const file = req.file;
 
     try {
-        let parsedNombreRep = JSON.parse(nombre_rep);
-        let parsedPoids = JSON.parse(poids);
+        const parsedNombreRep = nombre_rep ? JSON.parse(nombre_rep) : [0];
+        const parsedPoids = poids ? JSON.parse(poids) : [0];
+        const parsedNombreSeries = nombre_series ? parseInt(nombre_series, 10) : 1;
+        const parsedTempsRepos = temps_repos ? parseInt(temps_repos, 10) : 0;
 
         const newCustomExercise = new ExerciceCustom({
             id_utilisateur: req.user.id,
@@ -19,9 +21,9 @@ exports.addCustomExercise = async (req, res) => {
             description,
             id_groupe_musculaire,
             lien_video,
-            nombre_series,
+            nombre_series: parsedNombreSeries,
             nombre_rep: parsedNombreRep,
-            temps_repos,
+            temps_repos: parsedTempsRepos,
             poids: parsedPoids,
             date_creation: Date.now(),
             date_modification: Date.now(),
@@ -82,6 +84,10 @@ exports.addCustomExerciseFromExercice = async (req, res) => {
             photo: exercice.photo,
             id_groupe_musculaire: exercice.id_groupe_musculaire,
             lien_video: exercice.lien_video,
+            nombre_series: exercice.nombre_series || 1,
+            nombre_rep: exercice.nombre_rep && exercice.nombre_rep.length ? exercice.nombre_rep : [0],
+            temps_repos: exercice.temps_repos || 0,
+            poids: exercice.poids && exercice.poids.length ? exercice.poids : [0],
             date_creation: Date.now(),
             date_modification: Date.now(),
             categorie: 'actif'
