@@ -17,8 +17,8 @@ exports.getSeanceStats = async (req, res) => {
         const seanceQuery = { id_utilisateur: userId, status: 'effectue', date_end: { $gte: start, $lte: end } };
         const seances = await StatusSeance.find(seanceQuery).populate('id_seance', 'nom');
 
-        // Initialiser un objet pour stocker les statistiques
-        const stats = {};
+        // Initialiser un tableau pour stocker les statistiques
+        const stats = [];
 
         // Parcourir chaque séance pour obtenir les statistiques des exercices
         for (const seance of seances) {
@@ -30,17 +30,11 @@ exports.getSeanceStats = async (req, res) => {
 
             const statusExercices = await StatusExercice.find(exerciceQuery).populate('id_exercice_custom');
 
-            // Initialiser les statistiques pour cette séance
-            if (!stats[seance.id_seance.nom]) {
-                stats[seance.id_seance.nom] = {
-                    date: seance.date_end,
-                    exercices: []
-                };
-            }
-
             // Collecter les statistiques pour chaque exercice
             for (const statusExercice of statusExercices) {
                 const exerciceStats = {
+                    seance: seance.id_seance.nom,
+                    date: seance.date_end,
                     exercice: statusExercice.id_exercice_custom.nom,
                     stats: {}
                 };
@@ -59,11 +53,21 @@ exports.getSeanceStats = async (req, res) => {
                         break;
                 }
 
-                stats[seance.id_seance.nom].exercices.push(exerciceStats);
+                stats.push(exerciceStats);
             }
         }
 
-        res.status(200).json(stats);
+        // Grouper les exercices par date
+        const groupedStats = stats.reduce((acc, stat) => {
+            const date = stat.date.toISOString().split('T')[0]; // Format de la date en 'YYYY-MM-DD'
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+            acc[date].push(stat);
+            return acc;
+        }, {});
+
+        res.status(200).json(groupedStats);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
