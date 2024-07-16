@@ -49,7 +49,7 @@ exports.userLogin = async ({ emailOrPseudo, password }) => {
             sqlConnection.query(updateQuery, [user.id], (err) => {
                 if (err) return reject(err);
 
-                const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+                const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
                 resolve({ token });
             });
         });
