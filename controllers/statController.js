@@ -34,7 +34,7 @@ exports.getSeanceStats = async (req, res) => {
             for (const statusExercice of statusExercices) {
                 const exerciceStats = {
                     seance: seance.id_seance.nom,
-                    date: seance.date_end,
+                    date: seance.date_end.toISOString().split('T')[0], // Format de la date en 'YYYY-MM-DD'
                     exercice: statusExercice.id_exercice_custom.nom,
                     stats: {}
                 };
@@ -44,7 +44,7 @@ exports.getSeanceStats = async (req, res) => {
                         exerciceStats.stats.poids = statusExercice.poids;
                         break;
                     case 'rep':
-                        exerciceStats.stats.nombre_rep = statusExercice.nombre_rep;
+                        exerciceStats.stats.nombre_rep = statusExercice.nombre_rep.reduce((sum, rep) => sum + rep, 0);
                         break;
                     case 'serie':
                         exerciceStats.stats.numero_serie = statusExercice.numero_serie;
@@ -57,15 +57,39 @@ exports.getSeanceStats = async (req, res) => {
             }
         }
 
-        // Grouper les exercices par date
+        // Grouper les exercices par date et appliquer les calculs nécessaires
         const groupedStats = stats.reduce((acc, stat) => {
-            const date = stat.date.toISOString().split('T')[0]; // Format de la date en 'YYYY-MM-DD'
+            const date = stat.date;
             if (!acc[date]) {
-                acc[date] = [];
+                acc[date] = {
+                    seance: stat.seance,
+                    date: stat.date,
+                    exercice: stat.exercice,
+                    stats: {
+                        poids: [],
+                        nombre_rep: 0,
+                        numero_serie: 0
+                    }
+                };
             }
-            acc[date].push(stat);
+            if (filter === 'poids') {
+                acc[date].stats.poids.push(...stat.stats.poids);
+            } else if (filter === 'rep') {
+                acc[date].stats.nombre_rep += stat.stats.nombre_rep;
+            } else if (filter === 'serie') {
+                acc[date].stats.numero_serie += stat.stats.numero_serie;
+            }
             return acc;
         }, {});
+
+        // Calculer la moyenne pour le poids
+        if (filter === 'poids') {
+            for (const date in groupedStats) {
+                const totalPoids = groupedStats[date].stats.poids.reduce((sum, poids) => sum + poids, 0);
+                const countPoids = groupedStats[date].stats.poids.length;
+                groupedStats[date].stats.poids = countPoids > 0 ? (totalPoids / countPoids) : 0;
+            }
+        }
 
         res.status(200).json(groupedStats);
     } catch (err) {
