@@ -15,6 +15,14 @@ exports.addCustomExercise = async (req, res) => {
         const parsedNombreSeries = nombre_series ? parseInt(nombre_series, 10) : 1;
         const parsedTempsRepos = temps_repos ? parseInt(temps_repos, 10) : 0;
 
+        // Vérifier si les valeurs sont négatives
+        if (parsedNombreSeries < 0 || parsedTempsRepos < 0 || parsedNombreRep.some(rep => rep < 0) || parsedPoids.some(p => p < 0)) {
+            if (file) {
+                await fs.unlink(file.path);
+            }
+            return res.status(400).json({ message: 'Les valeurs ne peuvent pas être négatives.' });
+        }
+
         const newCustomExercise = new ExerciceCustom({
             id_utilisateur: req.user.id,
             nom,
@@ -163,14 +171,24 @@ exports.editCustomExercise = async (req, res) => {
 
         let parsedNombreRep = JSON.parse(nombre_rep);
         let parsedPoids = JSON.parse(poids);
+        let parsedNombreSeries = parseInt(nombre_series, 10);
+        let parsedTempsRepos = parseInt(temps_repos, 10);
+
+        // Vérifier si les valeurs sont négatives
+        if (parsedNombreSeries < 0 || parsedTempsRepos < 0 || parsedNombreRep.some(rep => rep < 0) || parsedPoids.some(p => p < 0)) {
+            if (file) {
+                await fs.unlink(file.path).catch(console.error);
+            }
+            return res.status(400).json({ message: 'Les valeurs ne peuvent pas être négatives.' });
+        }
 
         exerciceCustom.nom = nom;
         exerciceCustom.description = description;
         exerciceCustom.id_groupe_musculaire = id_groupe_musculaire;
         exerciceCustom.lien_video = lien_video;
-        exerciceCustom.nombre_series = nombre_series;
+        exerciceCustom.nombre_series = parsedNombreSeries;
         exerciceCustom.nombre_rep = parsedNombreRep;
-        exerciceCustom.temps_repos = temps_repos;
+        exerciceCustom.temps_repos = parsedTempsRepos;
         exerciceCustom.poids = parsedPoids;
         exerciceCustom.date_modification = Date.now();
 
