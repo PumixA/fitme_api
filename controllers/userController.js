@@ -157,12 +157,19 @@ exports.updateUserProfile = async (req, res) => {
             user.photo_extension = fileExtension;
         }
 
+        const updatedProfileData = { nom, prenom, genre, photo_profil: photoFile, date_modification: new Date() };
+
+        // Add valid fields to the update data
+        if (age >= 0) updatedProfileData.age = age;
+        if (taille >= 0) updatedProfileData.taille = taille;
+        if (poids >= 0) updatedProfileData.poids = poids;
+
+        // Calculate IMC if both taille and poids are provided
         let imc = null;
-        if (taille && poids) {
+        if (taille >= 0 && poids >= 0) {
             imc = (poids / ((taille / 100) ** 2)).toFixed(2);
         }
 
-        const updatedProfileData = { nom, prenom, age, genre, photo_profil: photoFile, date_modification: new Date() };
         const result = await UserModel.updateUserProfile(req.user.id, updatedProfileData);
 
         res.status(200).json({ message: 'Profil utilisateur mis à jour avec succès', user: updatedProfileData, imc });
@@ -174,6 +181,7 @@ exports.updateUserProfile = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
 
 exports.checkStatusSeance = async (req, res) => {
     try {
