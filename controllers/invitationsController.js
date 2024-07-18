@@ -32,7 +32,7 @@ exports.inviter = async (req, res) => {
 
             await QRCode.toFile(qrCodePath, tokenUrl);
 
-            await sendInvitationEmail(email, tokenUrl, qrCodePath);
+            await sendInvitationEmail(email, tokenUrl, qrCodePath, limite_utilisation);
         }
 
         res.status(201).json(invitation);
@@ -41,7 +41,7 @@ exports.inviter = async (req, res) => {
     }
 };
 
-const sendInvitationEmail = async (email, tokenUrl, qrCodePath) => {
+const sendInvitationEmail = async (email, tokenUrl, qrCodePath, limite_utilisation) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -51,16 +51,26 @@ const sendInvitationEmail = async (email, tokenUrl, qrCodePath) => {
     });
 
     const mailOptions = {
-        from: process.env.EMAIL_USERNAME,
+        from: 'Fitme',
         to: email,
         subject: 'Invitation à tester la bêta de FitMe',
         html: `
-            <div style="text-align: center;">
-                <h1>FitMe</h1>
-                <p>Vous avez été sélectionné pour tester la bêta</p>
-                <a href="${tokenUrl}">${tokenUrl}</a>
-                <div>
-                    <img src="cid:qrCode" alt="QR Code" />
+            <div style="background: url('http://localhost:4000/img/background_email.jpg'); padding: 50px 0; text-align: center;">
+                <div style="background: white; border-radius: 20px; padding: 20px; display: inline-block; max-width: 600px; width: 100%;">
+                    <h1 style="font-family: 'Lato', sans-serif; color: #FF5722; font-size: 20px;">FITME (Bêta) 0.1</h1>
+                    <p style="font-family: 'Rubik', sans-serif; color: #000000; font-size: 12px;">
+                        Félicitations, vous avez été sélectionné pour participer à la bêta de l'application sportive FitMe! Nous restons à votre disposition pour toute demande, problème ou idée d'améliorations futures.
+                    </p>
+                    <a href="${tokenUrl}" style="font-family: 'Rubik', sans-serif; color: #000000; font-size: 15px;">Lien</a>
+                    <div>
+                        <img src="cid:qrCode" alt="QR Code" />
+                    </div>
+                    <p style="font-family: 'Rubik', sans-serif; color: #000000; font-size: 12px;">
+                        Vous pouvez créer (sauf si modifications par l'administrateur) ${limite_utilisation} comptes avec ce lien.
+                    </p>
+                    <p style="font-family: 'Rubik', sans-serif; color: #000000; font-size: 10px;">
+                        Développé par Melvin Delorme.
+                    </p>
                 </div>
             </div>
         `,
@@ -110,7 +120,7 @@ exports.editInvitation = async (req, res) => {
         if (!updatedInvitation) {
             return res.status(404).json({ message: 'Invitation not found' });
         }
-        res.status(200).json({ message: 'Invitation mise a jour avec succès !' });
+        res.status(200).json({ message: 'Invitation mise à jour avec succès !' });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
