@@ -340,19 +340,16 @@ exports.editExercice = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        // Verify that the exercise exists and belongs to the user
         const exerciceCustom = await ExerciceCustom.findOne({ _id: exerciceCustomId, id_utilisateur: userId, categorie: 'actif' });
         if (!exerciceCustom) {
             return res.status(404).json({ message: 'Exercice customisé non trouvé ou non autorisé' });
         }
 
-        // Find the current active status_seance for the user
         const statusSeance = await StatusSeance.findOne({ id_utilisateur: userId, status: 'en_cours' });
         if (!statusSeance) {
             return res.status(404).json({ message: 'Aucune séance en cours trouvée pour l\'utilisateur' });
         }
 
-        // Find the related status_exercice entry
         const statusExercice = await StatusExercice.findOne({
             id_exercice_custom: exerciceCustomId,
             id_status_seance: statusSeance._id,
