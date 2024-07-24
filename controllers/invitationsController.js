@@ -1,8 +1,13 @@
+require('dotenv').config();
+
 const InvitationsModel = require('../models/invitationsModel');
 const nodemailer = require('nodemailer');
 const QRCode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
+
+const apiUrl = process.env.API_URL;
+const frontUrl = process.env.FRONT_URL;
 
 exports.inviter = async (req, res) => {
     const { email, limite_utilisation } = req.body;
@@ -27,7 +32,7 @@ exports.inviter = async (req, res) => {
         const invitation = await InvitationsModel.createInvitation(email || null, limite_utilisation);
 
         if (email) {
-            const tokenUrl = `http://localhost:3000/register/${invitation.token}`;
+            const tokenUrl = `${frontUrl}/register/${invitation.token}`;
             const qrCodePath = path.join(__dirname, '../uploads/qr-code.png');
 
             await QRCode.toFile(qrCodePath, tokenUrl);
@@ -55,7 +60,7 @@ const sendInvitationEmail = async (email, tokenUrl, qrCodePath, limite_utilisati
         to: email,
         subject: 'Invitation à tester la bêta de FitMe',
         html: `
-            <div style="background: url('http://localhost:4000/img/background_email.jpg'); padding: 50px 0; text-align: center;">
+            <div style="background: url(${apiUrl}/img/background_email.jpg); padding: 50px 0; text-align: center;">
                 <div style="background: white; border-radius: 20px; padding: 20px; display: inline-block; max-width: 600px; width: 100%;">
                     <h1 style="font-family: 'Lato', sans-serif; color: #FF5722; font-size: 20px;">FITME (Bêta) 0.1</h1>
                     <p style="font-family: 'Rubik', sans-serif; color: #000000; font-size: 12px;">
@@ -103,7 +108,7 @@ exports.getOneInvitation = async (req, res) => {
         if (!invitation) {
             return res.status(404).json({ message: 'Invitation non trouvée' });
         }
-        const baseUrl = 'http://localhost:4000/api/users/register/';
+        const baseUrl = `${apiUrl}/api/users/register/`;
         invitation.registrationLink = `${baseUrl}${invitation.token}`;
         res.status(200).json(invitation);
     } catch (err) {
